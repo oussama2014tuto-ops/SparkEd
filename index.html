@@ -1,0 +1,1255 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --cream:#FBF5EA; --paper:#FFFFFF; --ink:#231a12; --ink-soft:#5c5043;
+    --ember:#FF5630; --ember-deep:#E63E1B; --amber:#FFB23E; --gold:#FFD24C;
+    --violet:#6C4CF1; --teal:#12B5A5; --line:rgba(35,26,18,.10);
+    --shadow:0 18px 40px -22px rgba(35,26,18,.45); --shadow-sm:0 8px 22px -14px rgba(35,26,18,.40);
+    --radius:22px;
+    --hat-white:#f3f0e8; --hat-red:#FF4D5E; --hat-black:#2b2b32; --hat-yellow:#FFC83D; --hat-green:#27C28B; --hat-blue:#3B82F6;
+    --disp:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;
+    --body:"Hanken Grotesk",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  #sparked-app{font-family:var(--body);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1200px 500px at 85% -10%, rgba(255,178,62,.20), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(108,76,241,.12), transparent 55%),
+      radial-gradient(700px 600px at 50% 120%, rgba(18,181,165,.12), transparent 60%), var(--cream);}
+  #sparked-app::selection,#sparked-app *::selection{background:var(--amber);color:var(--ink)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  input,textarea,select{font-family:inherit}
+  h1,h2,h3,h4{font-family:var(--disp);line-height:1.05;letter-spacing:-.02em}
+  a{color:var(--ember)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  .topbar{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);background:rgba(251,245,234,.82);border-bottom:1px solid var(--line)}
+  .topbar .row{display:flex;align-items:center;gap:14px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;font-size:22px;letter-spacing:-.03em;cursor:pointer}
+  .spark{display:inline-block;width:26px;height:26px;position:relative}
+  .spark::before,.spark::after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,var(--ember),var(--gold),var(--ember));
+    clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:tw 3.4s ease-in-out infinite}
+  .spark::after{transform:scale(.55) rotate(45deg);background:var(--gold);opacity:.9;animation-delay:.4s}
+  @keyframes tw{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(20deg)}}
+  .grow{flex:1}
+  .chip-xp{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);padding:7px 12px;border-radius:999px;box-shadow:var(--shadow-sm);font-weight:700;font-size:13px}
+  .lvl{background:var(--ink);color:var(--cream);border-radius:999px;font-size:11px;padding:3px 9px;font-weight:800}
+  .navlink{font-weight:600;font-size:14px;color:var(--ink-soft);padding:8px 12px;border-radius:12px}
+  .navlink:hover{color:var(--ink);background:rgba(35,26,18,.05)}
+  .navlink.active{color:var(--ink);background:var(--gold)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:15px;padding:13px 22px;border-radius:14px;transition:transform .12s,box-shadow .2s,background .2s}
+  .btn:active{transform:translateY(1px)} .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-sm{padding:9px 15px;font-size:13px;border-radius:11px}
+  .btn-primary{background:var(--ember);color:#fff;box-shadow:0 12px 24px -12px var(--ember)} .btn-primary:hover{background:var(--ember-deep)}
+  .btn-ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow-sm)} .btn-ghost:hover{background:#fff}
+  .btn-dark{background:var(--ink);color:var(--cream)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:6px 13px;border-radius:999px}
+  .muted{color:var(--ink-soft)} .lead{font-size:16px;max-width:62ch}
+  .view{animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .stagger>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  .stagger>*:nth-child(2){animation-delay:.06s}.stagger>*:nth-child(3){animation-delay:.12s}
+  .stagger>*:nth-child(4){animation-delay:.18s}.stagger>*:nth-child(5){animation-delay:.24s}.stagger>*:nth-child(6){animation-delay:.3s}
+  .field{width:100%;padding:14px 15px;border:1.5px solid var(--line);border-radius:13px;font-size:15px;background:var(--paper);transition:.15s}
+  .field:focus{outline:none;border-color:var(--ember);box-shadow:0 0 0 4px rgba(255,86,48,.12)}
+  .row-flex{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .section-h{display:flex;align-items:baseline;gap:12px;margin:30px 0 16px} .section-h h2{font-size:24px}
+  .empty{color:var(--ink-soft);font-size:14px;padding:20px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+  .progress{height:9px;border-radius:999px;background:rgba(35,26,18,.1);overflow:hidden}
+  .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:999px;transition:width .8s cubic-bezier(.2,.7,.3,1)}
+  .back{font-weight:700;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px} .back:hover{color:var(--ink)}
+
+  /* landing gate */
+  .gate{min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;padding:46px 22px}
+  .gate-card{max-width:680px;width:100%;text-align:center}
+  .gate h1{font-size:clamp(36px,6.5vw,58px);margin:10px 0 12px}
+  .grad{background:linear-gradient(100deg,var(--ember),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .feat-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0 22px}
+  .feat-row span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;box-shadow:var(--shadow-sm)}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 16px}
+  .role{border:2px solid var(--line);border-radius:18px;padding:20px 16px;text-align:left;background:var(--paper);transition:.18s}
+  .role:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .role.sel{border-color:var(--ember);background:#fff;box-shadow:0 0 0 4px rgba(255,86,48,.12)}
+  .role .ic{font-size:26px}.role b{display:block;font-family:var(--disp);font-size:18px;margin-top:8px}.role span{font-size:13px}
+
+  /* dashboard */
+  .hero-strip{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin:26px 0}
+  .welcome{background:linear-gradient(120deg,var(--ink),#3a2c1e);color:var(--cream);border-radius:var(--radius);padding:30px;position:relative;overflow:hidden}
+  .welcome::after{content:"✦";position:absolute;right:-10px;top:-20px;font-size:160px;color:rgba(255,210,76,.13);font-family:var(--disp)}
+  .welcome h2{font-size:30px;color:#fff}
+  .ring{display:flex;align-items:center;gap:16px;margin-top:18px}
+  .ring .bar{flex:1;height:11px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
+  .ring .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--ember));border-radius:999px;transition:width .8s cubic-bezier(.2,.7,.3,1)}
+  .stat-mini{display:grid;grid-template-rows:repeat(3,1fr);gap:12px}
+  .stat-mini .c{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-sm)}
+  .stat-mini .n{font-family:var(--disp);font-size:26px;font-weight:800}
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+  /* course card */
+  .course{position:relative;overflow:hidden;cursor:pointer;border-radius:var(--radius);border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow-sm);transition:.2s;display:flex;flex-direction:column}
+  .course:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .course .top{height:92px;display:flex;align-items:center;justify-content:center;font-size:40px}
+  .course .body{padding:18px 18px 20px}
+  .course h3{font-size:19px;margin-bottom:5px}
+  .course .meta{display:flex;gap:8px;margin-top:12px;align-items:center;font-size:12px;font-weight:700;color:var(--ink-soft)}
+  .tag{font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:7px;background:rgba(35,26,18,.07)}
+
+  /* module rows */
+  .mod{display:flex;align-items:center;gap:14px;padding:15px 18px;border:1px solid var(--line);border-radius:15px;background:var(--paper);box-shadow:var(--shadow-sm);margin-bottom:10px;cursor:pointer;transition:.16s}
+  .mod:hover{transform:translateX(3px);border-color:var(--amber)}
+  .mod .mic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;flex:none}
+  .mod .done{margin-left:auto;font-weight:800;color:var(--teal);font-size:13px}
+  .mod .todo{margin-left:auto;font-weight:700;color:var(--ink-soft);font-size:13px}
+  .mtype{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+
+  /* quiz */
+  .qopt{display:block;width:100%;text-align:left;padding:13px 16px;border:1.5px solid var(--line);border-radius:13px;margin:8px 0;font-weight:600;font-size:15px;background:var(--paper);transition:.14s}
+  .qopt:hover{border-color:var(--amber)}
+  .qopt.sel{border-color:var(--ember);background:#fff8f6}
+  .qopt.correct{border-color:var(--teal);background:#effbf9}
+  .qopt.wrong{border-color:var(--hat-red);background:#fff1f2}
+
+  /* scenario */
+  .scn{border-radius:18px;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow-sm);padding:24px}
+  .scn .stage{font-size:17px;line-height:1.55;margin-bottom:18px}
+  .choice{display:block;width:100%;text-align:left;padding:14px 17px;border:1.5px solid var(--line);border-radius:13px;margin:9px 0;font-weight:600;background:var(--paper);transition:.15s}
+  .choice:hover{border-color:var(--ember);transform:translateX(3px);background:#fff8f6}
+  .consequence{border-left:4px solid var(--amber);background:#fff8ee;padding:12px 16px;border-radius:10px;margin:14px 0;font-size:14px}
+
+  /* hats + mindmap + review */
+  .hats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  .hat{border-radius:16px;padding:16px;border:2px solid transparent;cursor:pointer;transition:.16s;color:#fff;min-height:104px}
+  .hat:hover{transform:translateY(-3px)}.hat.sel{box-shadow:0 0 0 4px rgba(35,26,18,.18);transform:translateY(-3px)}
+  .hat b{font-family:var(--disp);font-size:17px}.hat p{font-size:12px;opacity:.95;margin-top:4px;line-height:1.3}.hat .ic{font-size:22px}
+  .fb-card{border:1px solid var(--line);border-radius:16px;padding:15px 17px;margin-top:11px;background:var(--paper)}
+  .fb-card h4{font-size:15px;margin-bottom:6px;display:flex;gap:8px}.fb-card p{font-size:14px;line-height:1.5;color:var(--ink-soft)}
+  .meter{height:14px;border-radius:999px;background:#eee;overflow:hidden}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--ember),var(--gold));transition:width .9s cubic-bezier(.2,.7,.3,1)}
+  .mm-wrap{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:auto;box-shadow:var(--shadow-sm);height:58vh;min-height:400px;
+    background:radial-gradient(circle at 20px 20px,rgba(35,26,18,.05) 1.4px,transparent 1.5px) 0 0/26px 26px,var(--paper)}
+  .mm-canvas{position:relative;width:1400px;height:1000px}
+  .mm-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .node{position:absolute;transform:translate(-50%,-50%);border-radius:14px;padding:9px 14px;font-weight:700;font-size:13px;border:1.5px solid var(--line);background:var(--paper);box-shadow:var(--shadow-sm);cursor:pointer;max-width:170px;text-align:center;transition:transform .15s,box-shadow .15s;animation:pop .35s cubic-bezier(.2,.8,.3,1) both}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1}}
+  .node:hover{transform:translate(-50%,-50%) scale(1.06);box-shadow:var(--shadow);z-index:5}
+  .node.root{background:var(--ink);color:#fff;font-size:16px;padding:14px 20px;border-color:var(--ink)}
+  .node.vocabulary{border-color:var(--teal);background:#effbf9}.node.concept{border-color:var(--violet);background:#f3f0ff}
+  .node .hint{display:block;font-weight:500;font-size:10.5px;color:var(--ink-soft);margin-top:3px;max-width:150px}
+  .node .plus{position:absolute;right:-9px;top:-9px;width:20px;height:20px;border-radius:50%;background:var(--ember);color:#fff;font-size:13px;display:grid;place-items:center}
+  .rev-crit{display:flex;align-items:center;gap:12px;margin:10px 0}
+  .rev-crit b{width:120px;font-size:14px}
+  .stars{display:flex;gap:4px}.star{font-size:22px;cursor:pointer;filter:grayscale(1);opacity:.4;transition:.1s}.star.on{filter:none;opacity:1}
+
+  /* tabs / builder / leaderboard / pricing / submissions */
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:18px 0}
+  .tab{padding:11px 16px;font-weight:700;font-size:14px;color:var(--ink-soft);border-bottom:2px solid transparent}
+  .tab.active{color:var(--ink);border-color:var(--ember)}
+  .lb-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:var(--paper);box-shadow:var(--shadow-sm);margin-bottom:9px}
+  .lb-rank{font-family:var(--disp);font-weight:800;font-size:18px;width:28px}
+  .lb-row.me{border-color:var(--ember);background:#fff8f6}
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+  .plan{border:1px solid var(--line);border-radius:var(--radius);padding:26px;background:var(--paper);box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+  .plan.feat{border:2px solid var(--ember);box-shadow:var(--shadow);transform:translateY(-6px)}
+  .plan .price{font-family:var(--disp);font-size:38px;font-weight:800;margin:8px 0}.plan .price small{font-size:15px;color:var(--ink-soft);font-weight:600}
+  .plan ul{list-style:none;margin:14px 0;flex:1}.plan li{padding:7px 0;font-size:14px;border-bottom:1px dashed var(--line)}.plan li::before{content:"✦ ";color:var(--ember)}
+  .builder-mod{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--paper)}
+  .media-box{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0d0a07;color:#fff;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;cursor:pointer}
+  .media-box .play{width:64px;height:64px;border-radius:50%;background:var(--ember);display:grid;place-items:center;font-size:26px}
+
+  .spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-3px}
+  .spinner.dark{border-color:rgba(35,26,18,.25);border-top-color:var(--ink)}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:var(--ink);color:var(--cream);padding:13px 20px;border-radius:14px;font-weight:700;box-shadow:var(--shadow);opacity:0;transition:.3s;z-index:90;font-size:14px;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .ribbon{font-size:11px;color:var(--ink-soft);text-align:center;padding:14px;border-top:1px solid var(--line);margin-top:46px}
+  .badges{display:flex;flex-wrap:wrap;gap:10px}
+  .badge{display:flex;align-items:center;gap:9px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow-sm);font-weight:700;font-size:13px}
+  .badge.off{opacity:.4;filter:grayscale(.7)}.badge .e{font-size:18px}
+  @media(max-width:820px){
+    .hero-strip,.cards3,.cards2,.hats,.plans{grid-template-columns:1fr}
+    .roles{grid-template-columns:1fr}.nav-desktop{display:none}.plan.feat{transform:none}
+    .rev-crit b{width:90px}
+  }
+  .iconbtn{width:38px;height:38px;border-radius:11px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:16px;display:inline-grid;place-items:center;margin-left:4px}
+  .iconbtn:hover{background:#fff}
+  *:focus-visible{outline:3px solid var(--violet);outline-offset:2px;border-radius:6px}
+  /* accessibility modes */
+  #sparked-app.a11y-bigtext{font-size:18.5px}
+  #sparked-app.a11y-contrast{--cream:#ffffff;--paper:#ffffff;--ink:#000000;--ink-soft:#1c1c1c;--line:rgba(0,0,0,.35);--shadow:0 0 0 1px rgba(0,0,0,.25);--shadow-sm:0 0 0 1px rgba(0,0,0,.2)}
+  #sparked-app.a11y-dyslexia{--body:"Tahoma","Verdana","Comic Sans MS",sans-serif;letter-spacing:.02em;word-spacing:.06em;line-height:1.7}
+  #sparked-app.a11y-reduce *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  /* drag & drop matching */
+  .dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+  .dd-col h4{font-size:14px;margin-bottom:10px;color:var(--ink-soft)}
+  .dd-slot{border:1.5px dashed var(--line);border-radius:13px;padding:14px 16px;margin-bottom:10px;min-height:54px;display:flex;align-items:center;gap:10px;font-weight:600;transition:.15s}
+  .dd-slot.has{border-style:solid}
+  .dd-slot.correct{border-color:var(--teal);background:#effbf9}
+  .dd-term{font-weight:800}
+  .dd-chip{border:1.5px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;font-weight:600;background:var(--paper);box-shadow:var(--shadow-sm);cursor:pointer;transition:.14s}
+  .dd-chip:hover{border-color:var(--amber)} .dd-chip.sel{border-color:var(--ember);background:#fff8f6;transform:scale(1.02)}
+  .dd-chip.used{opacity:.35;pointer-events:none}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .shake{animation:shake .35s}
+  /* memory game */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:560px;margin-top:8px}
+  .mem-card{aspect-ratio:3/4;border-radius:14px;border:1.5px solid var(--line);display:grid;place-items:center;cursor:pointer;font-weight:700;font-size:14px;text-align:center;padding:6px;background:linear-gradient(135deg,var(--violet),var(--ember));color:#fff;transition:.18s;user-select:none}
+  .mem-card.up{background:var(--paper);color:var(--ink);transform:rotateY(0)}
+  .mem-card.matched{background:#effbf9;color:var(--teal);border-color:var(--teal);cursor:default}
+  .mem-card.down span{opacity:0}
+  @media(max-width:560px){.mem-grid{grid-template-columns:repeat(3,1fr)}.dd-grid{grid-template-columns:1fr}}
+  /* discussion */
+  .post{border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;background:var(--paper);box-shadow:var(--shadow-sm)}
+  .post .who{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+  .post .role-pill{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:6px}
+  .post .reply{margin-top:10px;padding:10px 14px;border-left:3px solid var(--amber);background:var(--cream);border-radius:8px;font-size:14px}
+  /* challenges */
+  .chal{display:flex;align-items:center;gap:14px;padding:15px 18px;border:1px solid var(--line);border-radius:15px;background:var(--paper);box-shadow:var(--shadow-sm);margin-bottom:10px}
+  .chal.done{border-color:var(--teal);background:#effbf9}
+  .chal .ce{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#fff4e0;flex:none}
+  .toggle{width:46px;height:26px;border-radius:999px;background:var(--line);position:relative;transition:.18s;flex:none;cursor:pointer}
+  .toggle.on{background:var(--teal)} .toggle i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.18s}
+  .toggle.on i{left:23px}
+  .set-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .set-row b{font-size:15px} .set-row span{font-size:13px;color:var(--ink-soft)}
+</style>
+
+<div id="sparked-app">
+  <div class="topbar"><div class="wrap row">
+    <div class="brand" data-nav="home"><span class="spark"></span>SparkEd</div>
+    <div class="grow"></div>
+    <div id="nav" class="nav-desktop" style="display:flex;gap:4px"></div>
+    <div id="hud"></div>
+  </div></div>
+  <div id="screen"></div>
+  <div class="ribbon">Academic prototype · Dual-workspace LMS · AI activities run live in this environment · Payments simulated (SATIM / Chargily need a server) · © 2026 SparkEd</div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* SparkEd web build: provide window.storage backed by localStorage.
+   In the Claude environment window.storage already exists; on a real
+   website it doesn't, so we polyfill it here using the browser's
+   localStorage. Data persists per-browser/per-device. */
+if(!window.storage){
+  window.storage={
+    get:async(k)=>{try{const v=localStorage.getItem("sparked::"+k);return v===null?null:{key:k,value:v};}catch(e){return null;}},
+    set:async(k,v)=>{try{localStorage.setItem("sparked::"+k,v);}catch(e){}return {key:k,value:v};},
+    delete:async(k)=>{try{localStorage.removeItem("sparked::"+k);}catch(e){}return {key:k,deleted:true};},
+    list:async(prefix="")=>{const keys=[];try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&key.startsWith("sparked::"+prefix))keys.push(key.slice(9));}}catch(e){}return {keys};}
+  };
+}
+</script>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+/* ============== SEED CONTENT ============== */
+const SCENARIOS={
+  flight:{title:"The Delayed Flight",emoji:"✈️",start:"s0",nodes:{
+    s0:{text:"You're at the airport in London. The board flashes: your flight to Algiers is delayed 4 hours. You speak some English. What do you do first?",
+      choices:[
+        {label:"Go to the information desk and ask politely",next:"s1",fb:"Great instinct — using English to seek help is exactly the real-world skill we're building.",xp:5},
+        {label:"Sit down and wait silently, hoping it resolves",next:"s2",fb:"Safe, but you miss a chance to practise and to get useful information.",xp:1},
+        {label:"Complain loudly to other passengers",next:"s3",fb:"That raises stress without solving anything — tone matters in English too.",xp:0}]},
+    s1:{text:"The agent says the delay is due to weather and offers a meal voucher. She asks: 'Would you like me to check alternative connections?'",
+      choices:[
+        {label:"\"Yes please, that would be very helpful.\"",next:"end_good",fb:"Polite, clear, and proactive — perfect register.",xp:8},
+        {label:"\"No, I'll just wait.\"",next:"end_ok",fb:"Acceptable, but you passed up a better option.",xp:3}]},
+    s2:{text:"An announcement comes — but it's fast and you only catch 'gate change'. A stranger nearby looks confused too.",
+      choices:[
+        {label:"Turn to them: \"Sorry, did they change the gate?\"",next:"s1",fb:"Excellent — collaborating to understand is a real comprehension strategy.",xp:6},
+        {label:"Ignore it and stay seated",next:"end_miss",fb:"You risk missing your flight by avoiding communication.",xp:0}]},
+    s3:{text:"A staff member approaches: 'Sir/Madam, is everything okay? How can I help?'",
+      choices:[
+        {label:"Take a breath: \"Sorry. Can you tell me about the delay?\"",next:"s1",fb:"Recovering with a calm, polite question — well handled.",xp:5},
+        {label:"Keep venting",next:"end_miss",fb:"Communication breaks down when emotion takes over.",xp:0}]},
+    end_good:{text:"🎉 The agent rebooks you on an earlier connection through Paris. You navigated a stressful situation entirely in English — confidently and politely.",end:true,xp:15},
+    end_ok:{text:"You wait it out and eventually board. You handled it fine, though a little more initiative could have saved time.",end:true,xp:8},
+    end_miss:{text:"You nearly miss the gate change and have to rush. A reminder: in real English situations, asking questions beats staying silent.",end:true,xp:4}
+  }},
+  project:{title:"The Group Project",emoji:"🧩",start:"p0",nodes:{
+    p0:{text:"Your group must present in English tomorrow. One member, Sara, hasn't done her part. The group looks at you.",
+      choices:[
+        {label:"Message Sara privately and kindly ask if she's okay",next:"p1",fb:"Empathy first — strong collaborative leadership.",xp:6},
+        {label:"Tell the teacher Sara did nothing",next:"p2",fb:"Quick, but it skips a chance to solve it as a team.",xp:2},
+        {label:"Quietly do Sara's part yourself",next:"p3",fb:"Generous, but it can create resentment and isn't sustainable.",xp:3}]},
+    p1:{text:"Sara replies: 'I'm so sorry, I didn't understand the task in English.' What now?",
+      choices:[
+        {label:"Offer to explain it and split the work fairly",next:"end_team",fb:"You turned a conflict into support — and helped a peer's English.",xp:10},
+        {label:"Say it's too late and present without her",next:"end_solo",fb:"Understandable under pressure, but a missed bridge.",xp:4}]},
+    p2:{text:"The teacher suggests you all meet to sort it out together before deciding.",
+      choices:[{label:"Agree and help facilitate the meeting",next:"end_team",fb:"You stepped up as a mediator — great 21st-century skill.",xp:8}]},
+    p3:{text:"You finish everything at midnight, exhausted. Sara never learns what went wrong.",
+      choices:[{label:"Present, but talk to Sara afterward",next:"end_solo",fb:"Better late than never — feedback closes the loop.",xp:5}]},
+    end_team:{text:"🎉 The group presents together. Sara contributes a section in English she practised with your help. Strong, fair, collaborative.",end:true,xp:14},
+    end_solo:{text:"The presentation goes fine, but the group felt strained. Collaboration is a skill worth practising as much as grammar.",end:true,xp:7}
+  }}
+};
+
+const SEED_COURSES=[
+  {id:"c_story",title:"Storytelling in English",emoji:"📖",color:"#FFB23E",level:"B1",by:"SparkEd",
+   desc:"Build narrative and speaking skills through real-world tasks, scenarios and creative mapping.",
+   modules:[
+     {id:"m1",type:"lesson",title:"What makes a story stick",body:"Great stories share a shape: a hook, a rising tension, a turning point, and a resolution. In this course you'll use English not just to label these parts, but to build them yourself. Read the example below and notice how each sentence pulls you forward.\n\n'The lights went out. Somewhere in the dark, a door clicked open — and I was not alone.'\n\nNotice the short sentences, the sensory detail, and the unanswered question. That tension is what keeps a reader (or listener) engaged."},
+     {id:"m2",type:"video",title:"Anatomy of a great hook",url:"https://www.youtube.com/watch?v=example",body:"Watch how storytellers open with a question, an image, or a conflict. Then mark the module complete."},
+     {id:"m3",type:"quiz",title:"Story structure check",questions:[
+        {q:"Which part of a story introduces the main tension?",options:["Resolution","Rising action","Title","Glossary"],answer:1},
+        {q:"A strong 'hook' usually...",options:["Summarises the ending","Lists characters' ages","Creates curiosity or tension","Explains grammar rules"],answer:2},
+        {q:"Sensory details help a story by...","options":["Making it longer","Helping the reader picture it","Replacing the plot","Hiding the meaning"],answer:1}]},
+     {id:"m4",type:"scenario",title:"Branching: The Delayed Flight",scenario:"flight"},
+     {id:"m5",type:"mindmap",title:"Mind map: A memorable journey",topic:"A memorable journey"},
+     {id:"m6",type:"dragdrop",title:"Match the story terms",pairs:[{a:"Hook",b:"An opening that grabs attention"},{a:"Climax",b:"The moment of highest tension"},{a:"Setting",b:"Where and when it happens"},{a:"Resolution",b:"How the story is resolved"}]},
+     {id:"m7",type:"game",title:"Vocabulary memory game",pairs:[{a:"journey",b:"a trip"},{a:"vivid",b:"very clear"},{a:"recall",b:"remember"},{a:"narrate",b:"tell a story"}]},
+     {id:"m8",type:"assignment",title:"Write a 120-word story opening",prompt:"Write the opening of a story (about 120 words) that uses a hook and at least two sensory details. It will be sent for peer review."}
+   ]},
+  {id:"c_debate",title:"Debate & Critical Thinking",emoji:"⚖️",color:"#6C4CF1",level:"B2",by:"SparkEd",
+   desc:"Argue, evaluate evidence, and think from many angles — all in English.",
+   modules:[
+     {id:"d1",type:"lesson",title:"Building an argument",body:"A clear argument has three parts: a claim (what you believe), evidence (why), and a link (how the evidence supports the claim). Weak arguments skip the link. Strong ones make it explicit.\n\nClaim: Schools should start later.\nEvidence: Teenagers' body clocks shift later in adolescence.\nLink: So a later start aligns school with when students can actually focus — improving learning."},
+     {id:"d2",type:"sixhats",title:"Six Thinking Hats: smartphones in school",topic:"Should schools ban smartphones?"},
+     {id:"d3",type:"quiz",title:"Spot the reasoning",questions:[
+        {q:"Which is an opinion stated as if it were a fact?",options:["Water boils at 100°C","This is obviously the best phone ever","Algeria is in North Africa","The test is on Monday"],answer:1},
+        {q:"The 'link' in an argument...",options:["Lists sources","Connects evidence to the claim","Is the introduction","Is always a quote"],answer:1}]},
+     {id:"d4",type:"document",title:"Reading: 12 ways to argue well",url:"https://example.com/argue-well.pdf",body:"A one-page guide to building clear arguments. Open it, read it, then mark complete."},
+     {id:"d5",type:"scenario",title:"Branching: The Group Project",scenario:"project"},
+     {id:"d6",type:"casestudy",title:"Case study: The reluctant speaker",context:"Amine is a B1 student who writes English well but freezes whenever he's asked to speak in class. His teacher wants to build his confidence without singling him out in front of his peers.",questions:["What might be causing Amine's anxiety about speaking?","Suggest two specific classroom strategies the teacher could try.","How would the teacher know whether the strategies actually worked?"]},
+     {id:"d7",type:"assignment",title:"Write your strongest argument (100 words)",prompt:"Pick a side on 'Should homework be limited?' and write a 100-word argument with a claim, evidence and a link. It will be peer reviewed."}
+   ]}
+];
+
+const SEED_DISCUSSIONS={
+  c_story:[
+    {id:"ds1",author:"Lina B.",role:"student",text:"Does a story always need a villain? My opening doesn't have one.",when:Date.now()-7200000,
+     replies:[{author:"SparkEd",role:"teacher",text:"Not at all — tension can come from a goal, a secret, or a deadline. A villain is just one option.",when:Date.now()-5400000}]},
+    {id:"ds2",author:"Mehdi K.",role:"student",text:"Tip that helped me: read your opening out loud. If you stumble, the sentence is too long.",when:Date.now()-3600000,replies:[]}
+  ],
+  c_debate:[
+    {id:"dd1",author:"Yacine M.",role:"student",text:"How do you find good evidence quickly for a debate in English?",when:Date.now()-9000000,
+     replies:[{author:"SparkEd",role:"teacher",text:"Start with one strong statistic and one real example. Two solid pieces beat five weak ones.",when:Date.now()-7000000}]}
+  ]
+};
+
+const SEED_PEERS=[
+  {id:"p_seed1",student:"Lina B.",courseId:"c_story",moduleTitle:"Story opening",
+   text:"The classroom was empty, but the chalk was still moving across the board. I rubbed my eyes. When I looked again, a single word remained: 'Run.' My heart was a drum. I grabbed my bag and didn't look back.",when:Date.now()-86400000},
+  {id:"p_seed2",student:"Yacine M.",courseId:"c_debate",moduleTitle:"Argument",
+   text:"Homework should be limited. Studies show too much homework increases stress and reduces sleep. Because tired students learn less, limiting homework would actually protect learning, not harm it.",when:Date.now()-43200000},
+  {id:"p_seed3",student:"Mehdi K.",courseId:"c_story",moduleTitle:"Story opening",
+   text:"The market was loud and the smell of fresh bread filled the narrow street. I was only there to buy mint, but the old woman's eyes told me she had been waiting for me for years.",when:Date.now()-3600000}
+];
+const SEED_LB=[{name:"Lina B.",xp:360},{name:"Yacine M.",xp:300},{name:"Mehdi K.",xp:240},{name:"Nour H.",xp:180}];
+
+/* ============== STATE + PERSISTENCE ============== */
+const clone=o=>JSON.parse(JSON.stringify(o));
+// shared platform data (courses teachers build, all submissions/reviews, discussions)
+const DB_DEFAULT={courses:[],submissions:[],reviews:[],discussions:{},_seeded:false};
+let DB=clone(DB_DEFAULT);
+let accounts={};            // accounts[email]={password,name,role}
+let session=null;           // current logged-in email
+// per-account personal data (the live working object the whole UI reads)
+const USER_DEFAULT={xp:0,streak:1,lastDay:null,badges:{},enrolled:[],progress:{},plan:null,challengesClaimed:{},
+  prefs:{bigText:false,contrast:false,reduceMotion:false,dyslexia:false,accent:"#FF5630",goal:"Improve my spoken English",dailyXP:40}};
+let S=Object.assign({name:"",role:"",email:""},clone(USER_DEFAULT));
+function allCourses(){ return SEED_COURSES.concat(DB.courses); }
+function courseById(id){ return allCourses().find(c=>c.id===id); }
+
+async function load(){
+  try{const r=await window.storage.get("sparked:accounts");if(r&&r.value)accounts=JSON.parse(r.value);}catch(e){}
+  try{const r=await window.storage.get("sparked:platform");if(r&&r.value)DB=Object.assign(clone(DB_DEFAULT),JSON.parse(r.value));}catch(e){}
+  try{const r=await window.storage.get("sparked:session");if(r&&r.value)session=JSON.parse(r.value);}catch(e){}
+  if(!DB._seeded){
+    DB.submissions=SEED_PEERS.map(p=>({id:p.id,student:p.student,courseId:p.courseId,courseTitle:(courseById(p.courseId)||{}).title||"",moduleId:"seed",moduleTitle:p.moduleTitle,prompt:"",text:p.text,when:p.when}));
+    DB.discussions=clone(SEED_DISCUSSIONS); DB._seeded=true;
+  }
+  if(session&&accounts[session])await loadUser(session); else session=null;
+}
+async function loadUser(email){
+  let data=clone(USER_DEFAULT);
+  try{const r=await window.storage.get("sparked:user:"+email);if(r&&r.value)data=Object.assign(clone(USER_DEFAULT),JSON.parse(r.value));}catch(e){}
+  data.prefs=Object.assign(clone(USER_DEFAULT.prefs),data.prefs||{});
+  S=Object.assign({name:accounts[email].name,role:accounts[email].role,email},data);
+  const today=new Date().toISOString().slice(0,10);
+  if(S.lastDay&&S.lastDay!==today){const diff=(new Date(today)-new Date(S.lastDay))/86400000;S.streak=diff===1?S.streak+1:1;}
+  S.lastDay=today; applyPrefs();
+}
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(async()=>{try{
+  await window.storage.set("sparked:accounts",JSON.stringify(accounts));
+  await window.storage.set("sparked:platform",JSON.stringify(DB));
+  await window.storage.set("sparked:session",JSON.stringify(session));
+  if(S.email){const u={};Object.keys(USER_DEFAULT).forEach(k=>u[k]=S[k]);await window.storage.set("sparked:user:"+S.email,JSON.stringify(u));}
+}catch(e){}},150);}
+function register(email,password,name,role){
+  email=email.toLowerCase();
+  if(accounts[email])return"An account with this email already exists.";
+  accounts[email]={password,name,role}; session=email;
+  S=Object.assign({name,role,email},clone(USER_DEFAULT)); S.lastDay=new Date().toISOString().slice(0,10);
+  applyPrefs(); save(); return null;
+}
+async function login(email,password){
+  email=email.toLowerCase();
+  if(!accounts[email])return"No account found for that email.";
+  if(accounts[email].password!==password)return"Incorrect password.";
+  session=email; await loadUser(email); save(); return null;
+}
+function logout(){ session=null; S=Object.assign({name:"",role:"",email:""},clone(USER_DEFAULT)); applyPrefs(); save(); V={name:"home",params:{}}; render(); }
+function applyPrefs(){
+  const root=document.getElementById("sparked-app"); if(!root)return; const p=S.prefs||{};
+  root.classList.toggle("a11y-bigtext",!!p.bigText);
+  root.classList.toggle("a11y-contrast",!!p.contrast);
+  root.classList.toggle("a11y-reduce",!!p.reduceMotion);
+  root.classList.toggle("a11y-dyslexia",!!p.dyslexia);
+  root.style.setProperty("--ember",p.accent||"#FF5630");
+}
+
+/* ============== GAMIFICATION ============== */
+const levelOf=xp=>Math.floor(xp/120)+1, lvlFloor=xp=>(levelOf(xp)-1)*120, lvlPct=xp=>Math.round(((xp-lvlFloor(xp))/120)*100);
+const BADGES={first:{e:"⚡",t:"First Spark"},course:{e:"🎓",t:"Course Complete"},ace:{e:"💯",t:"Quiz Ace"},
+  reviewer:{e:"🤝",t:"Peer Reviewer"},mapper:{e:"🧠",t:"Mind Mapper"},thinker:{e:"🎩",t:"Deep Thinker"},
+  streak3:{e:"🔥",t:"3-Day Streak"},creator:{e:"🏗️",t:"Course Creator"}};
+function award(id){if(!S.badges[id]){S.badges[id]=true;toast(`${BADGES[id].e} Badge unlocked — ${BADGES[id].t}!`);}}
+function addXP(n){S.xp+=n;if(!S.badges.first)award("first");if(S.streak>=3)award("streak3");save();}
+let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2600);}
+
+/* progress helpers */
+function isDone(cid,mid){return !!(S.progress[cid]&&S.progress[cid][mid]);}
+function markDone(cid,mid){ if(!S.progress[cid])S.progress[cid]={}; const was=S.progress[cid][mid]; S.progress[cid][mid]=true;
+  const c=courseById(cid); if(c){const all=c.modules.every(m=>S.progress[cid][m.id]); if(all)award("course");} save(); return !was; }
+function coursePct(cid){const c=courseById(cid);if(!c)return 0;const d=c.modules.filter(m=>isDone(cid,m.id)).length;return Math.round(d/c.modules.length*100);}
+
+/* ============== AI BRIDGE (in-environment; swap ENDPOINT for your backend on deploy) ============== */
+const ENDPOINT="/api/ai";   // Vercel serverless proxy that holds the Anthropic key (see /api/ai.js)
+async function ai(system,user,maxTokens=900){
+  const res=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:maxTokens,system,messages:[{role:"user",content:user}]})});
+  if(!res.ok)throw new Error("AI request failed ("+res.status+")");
+  const data=await res.json();return data.content.filter(b=>b.type==="text").map(b=>b.text).join("\n");
+}
+function parseJSON(txt){let t=txt.trim().replace(/^```(?:json)?/i,"").replace(/```$/,"").trim();const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>-1&&b>-1)t=t.slice(a,b+1);return JSON.parse(t);}
+
+/* ============== ROUTER ============== */
+let V={name:"home",params:{}};
+function go(name,params){V={name,params:params||{}};render();window.scrollTo({top:0,behavior:"smooth"});}
+document.addEventListener("click",e=>{const n=e.target.closest("[data-nav]");if(n){go(n.getAttribute("data-nav"),JSON.parse(n.getAttribute("data-params")||"{}"));}});
+
+/* ============== SHARED BITS ============== */
+const MTYPE={lesson:{e:"📄",bg:"#fff4e0",label:"Lesson"},video:{e:"🎬",bg:"#f3f0ff",label:"Video"},
+  audio:{e:"🎧",bg:"#effbf9",label:"Audio"},document:{e:"📎",bg:"#eef3ff",label:"Document"},quiz:{e:"❓",bg:"#fff1f2",label:"Quiz"},
+  dragdrop:{e:"🧲",bg:"#eefcf5",label:"Drag & drop"},game:{e:"🎮",bg:"#fdeeff",label:"Memory game"},
+  casestudy:{e:"📂",bg:"#fff8ee",label:"Case study"},
+  scenario:{e:"🌿",bg:"#eefcf5",label:"Branching scenario"},assignment:{e:"✍️",bg:"#fff8ee",label:"Assignment"},
+  mindmap:{e:"🧠",bg:"#f3f0ff",label:"AI Mind Map"},sixhats:{e:"🎩",bg:"#fff4e0",label:"AI Six Hats"}};
+
+function hud(){ if(!session)return"";
+  return `<span class="lvl">LV ${levelOf(S.xp)}</span><span class="chip-xp">🔥 ${S.streak}d</span><span class="chip-xp">✦ ${S.xp} XP</span>
+    <button class="iconbtn" data-nav="settings" aria-label="Settings & preferences" title="Settings">⚙️</button>
+    <button class="iconbtn" id="logoutBtn" aria-label="Log out" title="Log out">⎋</button>`; }
+function nav(){ if(!S.role)return"";
+  const items=S.role==="teacher"?[["home","Studio"],["courses","Courses"],["submissions","Submissions"],["pricing","Plans"]]
+    :[["home","Dashboard"],["courses","Courses"],["challenges","Challenges"],["review","Peer Review"],["leaderboard","Leaderboard"]];
+  return items.map(([k,l])=>`<button class="navlink ${V.name===k?'active':''}" data-nav="${k}">${l}</button>`).join(""); }
+function updateChrome(){ $("#hud").innerHTML=hud(); $("#nav").innerHTML=nav(); const lo=$("#logoutBtn"); if(lo)lo.onclick=()=>{toast("Logged out");logout();}; }
+
+/* ============== AUTH (register / login) ============== */
+let authMode="register", authRole="student";
+function screenGate(){
+  return `<div class="gate"><div class="gate-card view stagger">
+    <span class="pill" style="background:var(--gold);color:var(--ink)">✦ Built for Algerian classrooms</span>
+    <h1>Ignite <span class="grad">active learning</span>,<br>one spark at a time.</h1>
+    <p class="lead muted" style="margin:0 auto">A complete English-learning platform: teachers build multimedia courses, students learn by doing — quizzes, drag &amp; drop, games, branching scenarios, peer review and AI thinking tools.</p>
+    <div class="feat-row">
+      <span>📚 Course builder</span><span>🌿 Branching scenarios</span><span>🤝 Peer review</span>
+      <span>💬 Discussions</span><span>🏆 Challenges</span><span>🧠 AI tools</span>
+    </div>
+    <div class="card" style="text-align:left;max-width:440px;margin:0 auto">
+      <div class="tabs" role="tablist">
+        <button class="tab ${authMode==='register'?'active':''}" id="tabReg" role="tab">Create account</button>
+        <button class="tab ${authMode==='login'?'active':''}" id="tabLog" role="tab">Log in</button>
+      </div>
+      ${authMode==='register'?`
+        <label style="font-weight:700;font-size:13px">I am a…</label>
+        <div class="roles" style="margin:8px 0 14px">
+          <button class="role ${authRole==='student'?'sel':''}" data-arole="student"><div class="ic">🎒</div><b>Student</b><span class="muted">Learn by doing.</span></button>
+          <button class="role ${authRole==='teacher'?'sel':''}" data-arole="teacher"><div class="ic">🍎</div><b>Teacher</b><span class="muted">Build &amp; track.</span></button>
+        </div>
+        <input class="field" id="aName" style="margin-bottom:10px" placeholder="Full name" aria-label="Full name"/>
+        <input class="field" id="aEmail" style="margin-bottom:10px" placeholder="Email" type="email" aria-label="Email"/>
+        <input class="field" id="aPass" style="margin-bottom:14px" placeholder="Password" type="password" aria-label="Password"/>
+        <button class="btn btn-primary" id="doReg" style="width:100%;justify-content:center">Create account →</button>`
+      :`
+        <input class="field" id="lEmail" style="margin:6px 0 10px" placeholder="Email" type="email" aria-label="Email"/>
+        <input class="field" id="lPass" style="margin-bottom:14px" placeholder="Password" type="password" aria-label="Password"/>
+        <button class="btn btn-primary" id="doLog" style="width:100%;justify-content:center">Log in →</button>`}
+      <p class="muted" style="font-size:11.5px;margin-top:12px;text-align:center">Accounts are stored locally in this prototype — no real server. Create both a teacher and a student account to see the full loop.</p>
+    </div>
+  </div></div>`;
+}
+function bindGate(){
+  const tr=$("#tabReg"),tl=$("#tabLog");
+  if(tr)tr.onclick=()=>{authMode="register";render();}; if(tl)tl.onclick=()=>{authMode="login";render();};
+  document.querySelectorAll("[data-arole]").forEach(b=>b.onclick=()=>{authRole=b.getAttribute("data-arole");render();});
+  const reg=$("#doReg");if(reg)reg.onclick=()=>{
+    const name=$("#aName").value.trim(),email=$("#aEmail").value.trim(),pass=$("#aPass").value;
+    if(!name){toast("Enter your name");return;} if(!/.+@.+\..+/.test(email)){toast("Enter a valid email");return;} if(pass.length<4){toast("Password needs 4+ characters");return;}
+    const err=register(email,pass,name,authRole); if(err){toast(err);return;} toast("🎉 Welcome to SparkEd!"); go("home");
+  };
+  const log=$("#doLog");if(log)log.onclick=async()=>{
+    const email=$("#lEmail").value.trim(),pass=$("#lPass").value; const err=await login(email,pass);
+    if(err){toast(err);return;} toast("Welcome back!"); go("home");
+  };
+}
+
+/* ============== STUDENT DASHBOARD ============== */
+function screenStudentHome(){
+  const enrolled=S.enrolled.map(courseById).filter(Boolean);
+  const browse=allCourses().filter(c=>!S.enrolled.includes(c.id));
+  const received=DB.reviews.filter(r=>{const sub=DB.submissions.find(x=>x.id===r.submissionId);return sub&&sub.student===S.name;}).length
+    + DB.submissions.filter(s=>s.student===S.name&&s.teacherFeedback).length;
+  return `<div class="wrap view">
+    <div class="hero-strip">
+      <div class="welcome stagger">
+        <span class="pill" style="background:rgba(255,210,76,.18);color:var(--gold)">Level ${levelOf(S.xp)} · ${S.streak}-day streak 🔥</span>
+        <h2 style="margin-top:12px">Welcome back, ${esc(S.name)}.</h2>
+        <p style="opacity:.85;margin-top:6px;max-width:44ch">${120-(S.xp-lvlFloor(S.xp))} XP to Level ${levelOf(S.xp)+1}. Keep the spark alive.</p>
+        <div class="ring"><div class="bar"><i style="width:${lvlPct(S.xp)}%"></i></div><b>${lvlPct(S.xp)}%</b></div>
+      </div>
+      <div class="stat-mini stagger">
+        <div class="c"><span style="font-size:24px">📚</span><div><div class="n">${enrolled.length}</div><div class="muted" style="font-size:12px">Courses enrolled</div></div></div>
+        <div class="c"><span style="font-size:24px">🏅</span><div><div class="n">${Object.keys(S.badges).length}</div><div class="muted" style="font-size:12px">Badges earned</div></div></div>
+        <div class="c"><span style="font-size:24px">💬</span><div><div class="n">${received}</div><div class="muted" style="font-size:12px">Peer reviews received</div></div></div>
+      </div>
+    </div>
+    <div class="section-h"><h2>Continue learning</h2><span class="grow"></span><button class="navlink" data-nav="courses">Browse all →</button></div>
+    ${enrolled.length?`<div class="cards3 stagger">${enrolled.map(c=>courseCard(c,true)).join("")}</div>`
+      :`<div class="empty">You haven't enrolled yet. <a data-nav="courses" style="cursor:pointer">Browse the catalog →</a></div>`}
+    ${browse.length?`<div class="section-h"><h2>Recommended for you</h2></div><div class="cards3 stagger">${browse.slice(0,3).map(c=>courseCard(c,false)).join("")}</div>`:""}
+    <div class="section-h"><h2>Trophy shelf</h2></div>
+    <div class="badges">${Object.entries(BADGES).map(([id,b])=>`<div class="badge ${S.badges[id]?'':'off'}"><span class="e">${b.e}</span>${b.t}</div>`).join("")}</div>
+  </div>`;
+}
+function courseCard(c,enrolled){
+  const pct=coursePct(c.id);
+  return `<div class="course" data-nav="course" data-params='${JSON.stringify({cid:c.id})}'>
+    <div class="top" style="background:${c.color}22">${c.emoji}</div>
+    <div class="body"><div class="row-flex"><span class="tag">${esc(c.level)}</span><span class="tag">${c.modules.length} modules</span></div>
+      <h3 style="margin-top:10px">${esc(c.title)}</h3>
+      <p class="muted" style="font-size:13.5px">${esc(c.desc)}</p>
+      ${enrolled?`<div class="progress" style="margin-top:14px"><i style="width:${pct}%"></i></div><div class="meta">${pct}% complete · by ${esc(c.by)}</div>`
+        :`<div class="meta" style="margin-top:14px">by ${esc(c.by)} · tap to preview & enroll</div>`}
+    </div></div>`;
+}
+
+/* ============== TEACHER STUDIO (dashboard) ============== */
+function screenTeacherHome(){
+  const subs=DB.submissions.slice().reverse();
+  const avg=subs.length?Math.round(DB.reviews.reduce((a,b)=>a+(avgScore(b)||0),0)/Math.max(1,DB.reviews.length)):0;
+  return `<div class="wrap view">
+    <div class="hero-strip">
+      <div class="welcome stagger">
+        <span class="pill" style="background:rgba(255,210,76,.18);color:var(--gold)">🍎 Teacher Studio</span>
+        <h2 style="margin-top:12px">Hello, ${esc(S.name)}.</h2>
+        <p style="opacity:.85;margin-top:6px;max-width:46ch">Build multimedia courses, mix in activities and AI tools, and watch your class think out loud.</p>
+        <div style="margin-top:16px"><button class="btn btn-primary" data-nav="build">+ Create a course</button></div>
+      </div>
+      <div class="stat-mini stagger">
+        <div class="c"><span style="font-size:24px">📚</span><div><div class="n">${DB.courses.length}</div><div class="muted" style="font-size:12px">Courses you built</div></div></div>
+        <div class="c"><span style="font-size:24px">📥</span><div><div class="n">${DB.submissions.length}</div><div class="muted" style="font-size:12px">Submissions</div></div></div>
+        <div class="c"><span style="font-size:24px">🤝</span><div><div class="n">${DB.reviews.length}</div><div class="muted" style="font-size:12px">Peer reviews</div></div></div>
+      </div>
+    </div>
+    <div class="section-h"><h2>Your courses</h2><span class="grow"></span><button class="btn btn-ghost btn-sm" data-nav="build">+ New</button></div>
+    ${DB.courses.length?`<div class="cards3 stagger">${DB.courses.map(c=>teacherCourseCard(c)).join("")}</div>`:`<div class="empty">No courses yet — build your first one. Students will see it instantly in their catalog.</div>`}
+    <div class="section-h"><h2>Platform courses (templates)</h2></div>
+    <div class="cards3 stagger">${SEED_COURSES.map(c=>courseCard(c,false)).join("")}</div>
+    <div class="section-h"><h2>Recent submissions</h2><span class="grow"></span><button class="navlink" data-nav="submissions">See all →</button></div>
+    ${subs.length?subs.slice(0,3).map(submissionRow).join(""):`<div class="empty">Student work will appear here.</div>`}
+  </div>`;
+}
+function teacherCourseCard(c){
+  return `<div class="course">
+    <div class="top" style="background:${c.color}22">${c.emoji}</div>
+    <div class="body"><div class="row-flex"><span class="tag">${esc(c.level)}</span><span class="tag">${c.modules.length} modules</span></div>
+      <h3 style="margin-top:10px">${esc(c.title)}</h3><p class="muted" style="font-size:13.5px">${esc(c.desc||"")}</p>
+      <div class="row-flex" style="margin-top:14px">
+        <button class="btn btn-ghost btn-sm" data-nav="course" data-params='${JSON.stringify({cid:c.id})}'>Preview</button>
+        <button class="btn btn-primary btn-sm" data-nav="build" data-params='${JSON.stringify({cid:c.id})}'>Edit</button>
+      </div></div></div>`;
+}
+function avgScore(r){const v=Object.values(r.scores||{});return v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*20):0;}
+
+/* ============== COURSES SCREEN ============== */
+function screenCourses(){
+  if(S.role==="teacher"){
+    return `<div class="wrap view"><div class="act-head section-h"><h2 style="font-size:30px">Courses</h2><span class="grow"></span><button class="btn btn-primary" data-nav="build">+ Create course</button></div>
+      <h3 style="margin:6px 0 12px">Built by you</h3>
+      ${DB.courses.length?`<div class="cards3 stagger">${DB.courses.map(teacherCourseCard).join("")}</div>`:`<div class="empty">Nothing here yet — create your first course.</div>`}
+      <div class="section-h"><h2>Platform library</h2></div>
+      <div class="cards3 stagger">${SEED_COURSES.map(c=>courseCard(c,false)).join("")}</div></div>`;
+  }
+  const enrolled=S.enrolled.map(courseById).filter(Boolean);
+  const browse=allCourses().filter(c=>!S.enrolled.includes(c.id));
+  return `<div class="wrap view"><h2 style="font-size:30px;margin:24px 0 4px">Courses</h2>
+    <p class="muted">Enroll, then work through each module at your own pace.</p>
+    <div class="section-h"><h2>My courses</h2></div>
+    ${enrolled.length?`<div class="cards3 stagger">${enrolled.map(c=>courseCard(c,true)).join("")}</div>`:`<div class="empty">You're not enrolled in anything yet.</div>`}
+    <div class="section-h"><h2>Catalog</h2></div>
+    ${browse.length?`<div class="cards3 stagger">${browse.map(c=>courseCard(c,false)).join("")}</div>`:`<div class="empty">You've enrolled in everything available 🎉</div>`}
+  </div>`;
+}
+
+/* ============== COURSE DETAIL ============== */
+function screenCourse(){
+  const c=courseById(V.params.cid); if(!c)return`<div class="wrap"><p>Course not found.</p></div>`;
+  const enrolled=S.enrolled.includes(c.id); const pct=coursePct(c.id);
+  return `<div class="wrap view">
+    <div class="section-h" style="margin-top:22px"><button class="back" data-nav="${S.role==='teacher'?'courses':'courses'}">← Courses</button></div>
+    <div class="card" style="background:linear-gradient(120deg,#fff,${c.color}12);border-color:${c.color}55">
+      <div class="row-flex"><div style="font-size:48px">${c.emoji}</div>
+        <div><div class="row-flex"><span class="tag">${esc(c.level)}</span><span class="tag">by ${esc(c.by)}</span></div>
+          <h1 style="font-size:30px;margin:8px 0 4px">${esc(c.title)}</h1>
+          <p class="muted lead">${esc(c.desc||"")}</p></div></div>
+      ${enrolled?`<div class="progress" style="margin-top:18px"><i style="width:${pct}%"></i></div>
+        <div class="muted" style="font-size:13px;margin-top:6px">${pct}% complete · ${c.modules.filter(m=>isDone(c.id,m.id)).length}/${c.modules.length} modules done</div>`
+        :`<div style="margin-top:18px"><button class="btn btn-primary" id="enrollBtn">Enroll — it's free ✦</button></div>`}
+    </div>
+    <div class="section-h"><h2>Modules</h2><span class="grow"></span><button class="btn btn-ghost btn-sm" data-nav="discussion" data-params='${JSON.stringify({cid:c.id})}'>💬 Discussion (${(DB.discussions[c.id]||[]).length})</button></div>
+    ${c.modules.map((m,i)=>{const t=MTYPE[m.type];const done=isDone(c.id,m.id);
+      return `<div class="mod" ${enrolled?`data-nav="module" data-params='${JSON.stringify({cid:c.id,mid:m.id})}'`:""} style="${enrolled?'':'opacity:.7;cursor:default'}">
+        <div class="mic" style="background:${t.bg}">${t.e}</div>
+        <div><div class="mtype">${i+1} · ${t.label}</div><div style="font-weight:700;font-size:15.5px">${esc(m.title)}</div></div>
+        ${enrolled?(done?`<span class="done">✓ Done</span>`:`<span class="todo">Start →</span>`):`<span class="todo">🔒</span>`}
+      </div>`;}).join("")}
+  </div>`;
+}
+function bindCourse(){const b=$("#enrollBtn");if(b)b.onclick=()=>{const cid=V.params.cid;if(!S.enrolled.includes(cid))S.enrolled.push(cid);save();toast("✦ Enrolled! Dive in.");render();};}
+
+/* ============== LEADERBOARD ============== */
+function screenLeaderboard(){
+  const rows=SEED_LB.concat([{name:S.name||"You",xp:S.xp,me:true}]).sort((a,b)=>b.xp-a.xp);
+  return `<div class="wrap view"><h2 style="font-size:30px;margin:24px 0 4px">Class leaderboard 🏆</h2>
+    <p class="muted">XP from every activity counts. Climb by learning consistently.</p>
+    <div style="margin-top:20px;max-width:560px">${rows.map((r,i)=>`<div class="lb-row ${r.me?'me':''}">
+      <div class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
+      <div style="flex:1"><b>${esc(r.name)}</b>${r.me?' <span class="tag">you</span>':''}</div>
+      <div style="font-weight:800;color:var(--ember)">✦ ${r.xp} XP</div></div>`).join("")}</div></div>`;
+}
+
+/* ============== PEER REVIEW LIST ============== */
+function screenReview(){
+  const pool=DB.submissions.filter(s=>s.student!==S.name && !DB.reviews.some(r=>r.submissionId===s.id&&r.reviewer===S.name));
+  const mine=DB.reviews.filter(r=>r.reviewer===S.name);
+  return `<div class="wrap view"><h2 style="font-size:30px;margin:24px 0 4px">Peer Review 🤝</h2>
+    <p class="lead muted">Read a classmate's work and give structured, constructive feedback. Reviewing builds your own critical eye — and earns XP.</p>
+    <div class="section-h"><h2>Waiting for your feedback</h2></div>
+    ${pool.length?pool.map(s=>`<div class="card" style="padding:20px;margin-bottom:12px">
+      <div class="row-flex"><span class="pill" style="background:#f3f0ff;color:var(--violet)">${esc(s.courseTitle||"Submission")}</span><span class="muted" style="font-size:12px">by ${esc(s.student)}</span></div>
+      <p style="margin:12px 0;font-size:15px;line-height:1.55">${esc(s.text)}</p>
+      <button class="btn btn-primary btn-sm" data-nav="reviewone" data-params='${JSON.stringify({sid:s.id})}'>Review this →</button>
+    </div>`).join(""):`<div class="empty">No submissions awaiting review right now. Check back after classmates submit.</div>`}
+    <div class="section-h"><h2>Reviews you've given (${mine.length})</h2></div>
+    ${mine.length?mine.slice().reverse().map(r=>{const s=DB.submissions.find(x=>x.id===r.submissionId);return `<div class="prompt-item card" style="padding:14px 16px;margin-bottom:8px"><b>${esc((s&&s.student)||"peer")}</b> — avg ${avgScore(r)}/100<div class="muted" style="font-size:13px;margin-top:4px">"${esc(r.comment)}"</div></div>`;}).join(""):`<div class="empty">You haven't given any reviews yet.</div>`}
+  </div>`;
+}
+
+/* ============== TEACHER SUBMISSIONS ============== */
+function submissionRow(s){const revs=DB.reviews.filter(r=>r.submissionId===s.id);const tf=s.teacherFeedback;
+  return `<div class="card" style="padding:18px;margin-bottom:10px">
+    <div class="row-flex"><b style="font-size:15px">${esc(s.student)}</b><span class="tag">${esc(s.courseTitle||"")}</span><span class="muted" style="font-size:12px">${esc(s.moduleTitle||"")}</span>
+      <span class="grow"></span><span class="muted" style="font-size:12px">${revs.length} peer review${revs.length===1?'':'s'}</span></div>
+    <p style="margin-top:10px;font-size:14.5px;line-height:1.55;white-space:pre-wrap">${esc(s.text)}</p>
+    ${revs.length?`<div class="muted" style="font-size:13px;margin-top:8px">Avg peer score: ${Math.round(revs.reduce((a,b)=>a+avgScore(b),0)/revs.length)}/100</div>`:""}
+    ${tf?`<div class="fb-card" style="border-color:var(--gold);margin-top:10px"><h4>🍎 Your feedback${tf.score!=null?` · ${tf.score}/100`:''}</h4><p>${esc(tf.comment)}</p></div>`:''}
+  </div>`;
+}
+function teacherEvalRow(s){const revs=DB.reviews.filter(r=>r.submissionId===s.id);const tf=s.teacherFeedback||{};
+  return `<div class="card" style="padding:18px;margin-bottom:10px">
+    <div class="row-flex"><b style="font-size:15px">${esc(s.student)}</b><span class="tag">${esc(s.courseTitle||"")}</span><span class="muted" style="font-size:12px">${esc(s.moduleTitle||"")}</span>
+      <span class="grow"></span><span class="muted" style="font-size:12px">${revs.length} peer · ${s.teacherFeedback?'✓ graded':'ungraded'}</span></div>
+    <p style="margin-top:10px;font-size:14.5px;line-height:1.55;white-space:pre-wrap">${esc(s.text)}</p>
+    <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:12px">
+      <div class="row-flex" style="margin-bottom:8px"><b style="font-size:13px">Your evaluation</b>
+        <input class="field" id="sc_${s.id}" type="number" min="0" max="100" value="${tf.score!=null?tf.score:''}" placeholder="Score /100" style="width:120px;padding:8px 10px"/></div>
+      <textarea class="field" id="cm_${s.id}" rows="2" style="resize:vertical" placeholder="Constructive feedback for ${esc(s.student)}…">${esc(tf.comment||"")}</textarea>
+      <button class="btn btn-primary btn-sm" data-fb="${s.id}" style="margin-top:8px">${s.teacherFeedback?'Update feedback':'Save feedback'}</button>
+    </div></div>`;
+}
+function screenSubmissions(){
+  const subs=DB.submissions.slice().reverse();
+  const students=new Set(subs.map(s=>s.student)).size;
+  const graded=subs.filter(s=>s.teacherFeedback).length;
+  return `<div class="wrap view"><h2 style="font-size:30px;margin:24px 0 4px">Submissions & analytics 📥</h2>
+    <p class="muted">Review student work, leave feedback and grades, and track engagement.</p>
+    <div class="cards3 stagger" style="margin:18px 0">
+      <div class="card" style="padding:18px"><div class="n" style="font-family:var(--disp);font-size:28px;font-weight:800">${subs.length}</div><div class="muted" style="font-size:13px">Total submissions</div></div>
+      <div class="card" style="padding:18px"><div class="n" style="font-family:var(--disp);font-size:28px;font-weight:800">${students}</div><div class="muted" style="font-size:13px">Active students</div></div>
+      <div class="card" style="padding:18px"><div class="n" style="font-family:var(--disp);font-size:28px;font-weight:800">${graded}/${subs.length}</div><div class="muted" style="font-size:13px">Graded by you</div></div>
+    </div>
+    <div class="section-h"><h2>Student work</h2></div>
+    ${subs.length?subs.map(teacherEvalRow).join(""):`<div class="empty">No submissions yet.</div>`}</div>`;
+}
+function bindSubmissions(){
+  document.querySelectorAll("[data-fb]").forEach(b=>b.onclick=()=>{const sid=b.getAttribute("data-fb");const s=DB.submissions.find(x=>x.id===sid);if(!s)return;
+    const comment=$("#cm_"+sid).value.trim();const scv=$("#sc_"+sid).value;
+    if(comment.length<5){toast("Write a short piece of feedback first");return;}
+    s.teacherFeedback={score:scv===""?null:Math.max(0,Math.min(100,+scv)),comment,by:S.name,when:Date.now()};
+    save();toast("🍎 Feedback saved for "+s.student);render();});
+}
+
+/* ============== PRICING + SIMULATED CHECKOUT ============== */
+const PLANS=[{k:"spark",n:"Spark",price:"Free",sub:"forever",feats:["1 class","Core activities","Community support"],feat:false},
+  {k:"classroom",n:"Classroom",price:"1 200",sub:"DZD / month",feats:["Up to 40 students","All AI activities","Progress dashboards","Peer review"],feat:true},
+  {k:"school",n:"School",price:"6 500",sub:"DZD / month",feats:["Unlimited classes","Admin & analytics","Priority support","Custom branding"],feat:false}];
+function screenPricing(){
+  return `<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="home">← Back</button></div>
+    <h1 style="font-size:34px">Plans for every classroom.</h1>
+    <p class="lead muted" style="margin:8px 0">Local payment via <b>SATIM</b> (CIB / Edahabia), <b>Chargily</b> and <b>SlickPay</b>, priced in Algerian Dinar.</p>
+    <div class="plans">${PLANS.map(p=>`<div class="plan ${p.feat?'feat':''}">
+      ${p.feat?'<span class="pill" style="background:var(--ember);color:#fff;align-self:flex-start">Most popular</span>':''}
+      <h3 style="font-size:22px;margin-top:6px">${p.n}</h3>
+      <div class="price">${p.price}${p.sub?` <small>${p.sub}</small>`:''}</div>
+      <ul>${p.feats.map(f=>`<li>${f}</li>`).join("")}</ul>
+      <button class="btn ${p.feat?'btn-primary':'btn-ghost'}" data-plan="${p.k}" style="justify-content:center">${S.plan===p.k?'✓ Current plan':p.price==='Free'?'Choose Spark':'Subscribe'}</button>
+    </div>`).join("")}</div><div id="payArea"></div></div>`;
+}
+function bindPricing(){document.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>checkout(PLANS.find(p=>p.k===b.getAttribute("data-plan"))));}
+function checkout(plan){
+  if(plan.price==="Free"){S.plan=plan.k;save();toast("✓ You're on the Spark plan");render();return;}
+  const a=$("#payArea");
+  a.innerHTML=`<div class="card view" style="max-width:460px;margin-top:22px;border-color:var(--ember)">
+    <span class="pill" style="background:#f3f0ff;color:var(--violet)">🔒 Simulated checkout</span>
+    <h3 style="font-size:22px;margin:10px 0 2px">${plan.n} — ${plan.price} ${plan.sub}</h3>
+    <p class="muted" style="font-size:13px;margin-bottom:14px">In production this redirects to the SATIM / Chargily / SlickPay secure gateway. No real card is processed here.</p>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap"><button class="btn btn-ghost" style="flex:1;justify-content:center">💳 CIB</button><button class="btn btn-ghost" style="flex:1;justify-content:center">🟡 Edahabia</button><button class="btn btn-ghost" style="flex:1;justify-content:center">⚡ SlickPay</button></div>
+    <button class="btn btn-primary" id="payNow" style="width:100%;justify-content:center">Pay ${plan.price} DZD</button></div>`;
+  a.scrollIntoView({behavior:"smooth"});
+  $("#payNow").onclick=()=>{const b=$("#payNow");b.disabled=true;b.innerHTML='<span class="spinner"></span> Contacting gateway…';
+    setTimeout(()=>{S.plan=plan.k;save();toast("🎉 Payment successful (simulated) — welcome to "+plan.n+"!");render();},1400);};
+}
+
+/* ============== MODULE PLAYER ============== */
+let quizState=null, scn=null, mm=null, sh={cid:null,mid:null,topic:"",hat:null,busy:false,fb:null};
+
+function screenModule(){
+  const c=courseById(V.params.cid); const m=c&&c.modules.find(x=>x.id===V.params.mid);
+  if(!c||!m)return `<div class="wrap"><p style="padding:40px">Module not found.</p></div>`;
+  const t=MTYPE[m.type]; const done=isDone(c.id,m.id);
+  const head=`<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="course" data-params='${JSON.stringify({cid:c.id})}'>← ${esc(c.title)}</button>${done?'<span class="grow"></span><span class="pill" style="background:#effbf9;color:var(--teal)">✓ Completed</span>':''}</div>
+    <div class="row-flex" style="margin-bottom:14px"><div class="mic" style="background:${t.bg}">${t.e}</div><div><div class="mtype">${t.label}</div><h1 style="font-size:30px">${esc(m.title)}</h1></div></div><div id="modBody">${moduleBody(c,m)}</div></div>`;
+  return head;
+}
+function moduleBody(c,m){
+  switch(m.type){
+    case "lesson": return `<div class="card">${m.body.split("\n\n").map(p=>`<p style="font-size:16px;line-height:1.65;margin-bottom:14px">${esc(p)}</p>`).join("")}
+      <button class="btn btn-primary" id="completeBtn">Mark complete (+5 XP) ✦</button></div>`;
+    case "video": case "audio": return `<div class="card"><div class="media-box" id="mediaPlay"><div class="play">${m.type==='video'?'▶':'🎧'}</div><div style="font-size:13px;opacity:.8">Tap to play ${m.type}</div></div>
+      <p class="muted" style="margin:14px 0;font-size:15px">${esc(m.body||"")}</p>
+      <button class="btn btn-primary" id="completeBtn">Mark complete (+5 XP) ✦</button></div>`;
+    case "document": return `<div class="card"><div class="row-flex" style="padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--cream)"><div style="font-size:30px">📎</div><div style="flex:1"><b>${esc(m.title)}</b><div class="muted" style="font-size:13px;word-break:break-all">${esc(m.url||"document")}</div></div>${m.url?`<a class="btn btn-ghost btn-sm" href="${esc(m.url)}" target="_blank" rel="noopener">Open ↗</a>`:''}</div>
+      <p class="muted" style="margin:14px 0;font-size:15px">${esc(m.body||"")}</p>
+      <button class="btn btn-primary" id="completeBtn">Mark complete (+5 XP) ✦</button></div>`;
+    case "quiz": return quizBody(c,m);
+    case "dragdrop": return ddBody(c,m);
+    case "game": return gameBody(c,m);
+    case "casestudy": return csBody(c,m);
+    case "scenario": return scnBody(c,m);
+    case "assignment": return assignBody(c,m);
+    case "mindmap": return mmBody(c,m);
+    case "sixhats": return shBody(c,m);
+  }
+  return "";
+}
+function bindModule(){
+  const c=courseById(V.params.cid); const m=c&&c.modules.find(x=>x.id===V.params.mid); if(!m)return;
+  const cb=$("#completeBtn"); if(cb)cb.onclick=()=>{const xp=5;if(markDone(c.id,m.id))addXP(xp);toast(`✓ Done! +${xp} XP`);go("course",{cid:c.id});};
+  const mp=$("#mediaPlay"); if(mp)mp.onclick=()=>toast("▶ Media would play here (links to your hosted file/stream).");
+  if(m.type==="quiz")bindQuiz(c,m);
+  if(m.type==="dragdrop")bindDragdrop(c,m);
+  if(m.type==="game")bindGame(c,m);
+  if(m.type==="casestudy")bindCaseStudy(c,m);
+  if(m.type==="scenario")bindScenario(c,m);
+  if(m.type==="assignment")bindAssign(c,m);
+  if(m.type==="mindmap")bindMindmap(c,m);
+  if(m.type==="sixhats")bindSixHats(c,m);
+}
+
+/* ---- QUIZ ---- */
+function quizBody(c,m){
+  if(!quizState||quizState.mid!==m.id)quizState={cid:c.id,mid:m.id,answers:{},submitted:false};
+  const qs=m.questions;
+  return `<div class="card">${qs.map((q,qi)=>`<div style="margin-bottom:22px">
+    <div style="font-weight:700;font-size:16px;margin-bottom:8px">${qi+1}. ${esc(q.q)}</div>
+    ${q.options.map((o,oi)=>{let cls="qopt";const sel=quizState.answers[qi]===oi;
+      if(quizState.submitted){if(oi===q.answer)cls+=" correct";else if(sel)cls+=" wrong";}
+      else if(sel)cls+=" sel";
+      return `<button class="${cls}" ${quizState.submitted?'disabled':''} data-q="${qi}" data-o="${oi}">${esc(o)}</button>`;}).join("")}
+  </div>`).join("")}
+  ${quizState.submitted?`<div class="consequence" style="border-color:var(--teal);background:#effbf9">You scored <b>${quizScore(m)}/${qs.length}</b>. ${quizScore(m)===qs.length?'Perfect! 💯':'Review the green answers above.'}</div>
+    <button class="btn btn-primary" id="quizDone">Continue ✦</button>`
+    :`<button class="btn btn-primary" id="quizSubmit">Submit answers</button>`}</div>`;
+}
+function quizScore(m){return m.questions.reduce((a,q,i)=>a+(quizState.answers[i]===q.answer?1:0),0);}
+function bindQuiz(c,m){
+  document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{if(quizState.submitted)return;
+    quizState.answers[+b.getAttribute("data-q")]=+b.getAttribute("data-o");$("#modBody").innerHTML=quizBody(c,m);bindQuiz(c,m);});
+  const sub=$("#quizSubmit");if(sub)sub.onclick=()=>{if(Object.keys(quizState.answers).length<m.questions.length){toast("Answer every question first");return;}
+    quizState.submitted=true;const sc=quizScore(m);const xp=8+sc*4;if(markDone(c.id,m.id))addXP(xp);if(sc===m.questions.length)award("ace");
+    $("#modBody").innerHTML=quizBody(c,m);bindQuiz(c,m);toast(`Quiz done! +${xp} XP`);};
+  const dn=$("#quizDone");if(dn)dn.onclick=()=>go("course",{cid:c.id});
+}
+
+/* ---- BRANCHING SCENARIO ---- */
+function scnBody(c,m){
+  const data=SCENARIOS[m.scenario];
+  if(!scn||scn.mid!==m.id)scn={cid:c.id,mid:m.id,sid:m.scenario,node:data.start,xp:0,lastFb:null};
+  const node=data.nodes[scn.node];
+  return `<div class="scn">
+    ${scn.lastFb?`<div class="consequence">💬 ${esc(scn.lastFb)}</div>`:`<p class="muted" style="font-size:13px;margin-bottom:10px">${data.emoji} Every choice changes what happens next. Decide in English.</p>`}
+    <div class="stage">${esc(node.text)}</div>
+    ${node.end?`<div class="row-flex"><span class="pill" style="background:var(--gold);color:var(--ink)">✦ +${scn.xp+(node.xp||0)} XP earned</span></div>
+      <button class="btn btn-primary" id="scnFinish" style="margin-top:14px">Finish scenario ✦</button>
+      <button class="btn btn-ghost" id="scnRetry" style="margin-top:14px">↺ Try again</button>`
+      :node.choices.map((ch,i)=>`<button class="choice" data-choice="${i}">${esc(ch.label)}</button>`).join("")}
+  </div>`;
+}
+function bindScenario(c,m){
+  const data=SCENARIOS[m.scenario];
+  document.querySelectorAll("[data-choice]").forEach(b=>b.onclick=()=>{
+    const node=data.nodes[scn.node];const ch=node.choices[+b.getAttribute("data-choice")];
+    scn.xp+=ch.xp||0;scn.lastFb=ch.fb;scn.node=ch.next;$("#modBody").innerHTML=scnBody(c,m);bindScenario(c,m);
+    document.querySelector(".scn").scrollIntoView({behavior:"smooth",block:"nearest"});});
+  const f=$("#scnFinish");if(f)f.onclick=()=>{const node=data.nodes[scn.node];const total=scn.xp+(node.xp||0);
+    if(markDone(c.id,m.id))addXP(total);else addXP(0);toast(`🎉 Scenario complete! +${total} XP`);scn=null;go("course",{cid:c.id});};
+  const r=$("#scnRetry");if(r)r.onclick=()=>{scn=null;$("#modBody").innerHTML=scnBody(c,m);bindScenario(c,m);};
+}
+
+/* ---- ASSIGNMENT + auto peer-loop ---- */
+function assignBody(c,m){
+  const mine=DB.submissions.find(s=>s.student===S.name&&s.moduleId===m.id);
+  if(mine){const revs=DB.reviews.filter(r=>r.submissionId===mine.id);
+    return `<div class="card"><p class="muted" style="font-size:14px">${esc(m.prompt)}</p>
+      <div class="consequence" style="border-color:var(--teal);background:#effbf9;margin-top:14px">✓ Submitted. Your work is now in the peer-review pool.</div>
+      <p style="margin:12px 0;font-size:15px;line-height:1.55"><b>Your submission:</b><br>${esc(mine.text)}</p>
+      ${mine.teacherFeedback?`<div class="fb-card" style="border-color:var(--gold)"><h4>🍎 Teacher feedback${mine.teacherFeedback.score!=null?` · ${mine.teacherFeedback.score}/100`:''}</h4><p>${esc(mine.teacherFeedback.comment)}</p></div>`:''}
+      <div class="section-h" style="margin:14px 0 8px"><h2 style="font-size:18px">Peer feedback (${revs.length})</h2></div>
+      ${revs.length?revs.map(r=>`<div class="fb-card"><h4>🤝 ${esc(r.reviewer)} · ${avgScore(r)}/100</h4><p>${esc(r.comment)}</p></div>`).join(""):`<div class="empty">No peer feedback yet.</div>`}
+      <button class="btn btn-ghost" id="completeBtn" style="margin-top:14px">Back to course</button></div>`;}
+  return `<div class="card"><p class="muted" style="font-size:15px;line-height:1.5">${esc(m.prompt)}</p>
+    <textarea class="field" id="asgText" rows="7" style="resize:vertical;margin:14px 0" placeholder="Write your response here…"></textarea>
+    <button class="btn btn-primary" id="asgSubmit">Submit for peer review (+15 XP) ✦</button></div>`;
+}
+function bindAssign(c,m){
+  const cb=$("#completeBtn");if(cb)cb.onclick=()=>go("course",{cid:c.id});
+  const sub=$("#asgSubmit");if(sub)sub.onclick=()=>{const t=$("#asgText").value.trim();if(t.length<20){toast("Write a little more before submitting ✍️");return;}
+    const sid="sub_"+uid();
+    DB.submissions.push({id:sid,student:S.name,courseId:c.id,courseTitle:c.title,moduleId:m.id,moduleTitle:m.title,prompt:m.prompt,text:t,when:Date.now()});
+    // simulate one incoming peer review so the "receive" loop is visible
+    DB.reviews.push({id:"rev_"+uid(),submissionId:sid,reviewer:"Lina B.",scores:{Clarity:4,Relevance:4,Language:3},comment:"Nice ideas and a clear structure! Watch a couple of verb tenses, and try one more specific example to strengthen it.",when:Date.now()});
+    if(markDone(c.id,m.id))addXP(15);save();toast("✦ Submitted! A classmate has already left feedback.");render();};
+}
+
+/* ---- CASE STUDY ---- */
+function csBody(c,m){
+  const mine=DB.submissions.find(s=>s.student===S.name&&s.moduleId===m.id);
+  if(mine){const revs=DB.reviews.filter(r=>r.submissionId===mine.id);const tf=mine.teacherFeedback;
+    return `<div class="card"><div class="consequence" style="border-color:var(--teal);background:#effbf9">✓ Response submitted.</div>
+      <p style="margin:12px 0;font-size:15px;line-height:1.6;white-space:pre-wrap">${esc(mine.text)}</p>
+      ${tf?`<div class="fb-card" style="border-color:var(--gold)"><h4>🍎 Teacher feedback${tf.score!=null?` · ${tf.score}/100`:''}</h4><p>${esc(tf.comment)}</p></div>`:''}
+      ${revs.map(r=>`<div class="fb-card"><h4>🤝 ${esc(r.reviewer)} · ${avgScore(r)}/100</h4><p>${esc(r.comment)}</p></div>`).join("")}
+      <button class="btn btn-ghost" id="completeBtn" style="margin-top:14px">Back to course</button></div>`;}
+  return `<div class="card"><div style="padding:14px 16px;background:var(--cream);border-radius:13px;border:1px solid var(--line);margin-bottom:6px">
+      <div class="mtype" style="margin-bottom:6px">The scenario</div><p style="font-size:15.5px;line-height:1.6">${esc(m.context)}</p></div>
+    <p class="muted" style="font-size:13px;margin:12px 0 4px">Read the case, then answer in your own words. Your response goes to your teacher and the peer-review pool.</p>
+    ${m.questions.map((q,i)=>`<label style="font-weight:700;font-size:14px;display:block;margin-top:12px">${i+1}. ${esc(q)}</label>
+      <textarea class="field csq" data-i="${i}" rows="2" style="resize:vertical;margin-top:6px" placeholder="Your answer…"></textarea>`).join("")}
+    <button class="btn btn-primary" id="csSubmit" style="margin-top:14px">Submit response (+18 XP) ✦</button></div>`;
+}
+function bindCaseStudy(c,m){
+  const cb=$("#completeBtn");if(cb)cb.onclick=()=>go("course",{cid:c.id});
+  const sub=$("#csSubmit");if(sub)sub.onclick=()=>{
+    const ans=[...document.querySelectorAll(".csq")].map(t=>t.value.trim());
+    if(ans.some(a=>a.length<3)){toast("Answer each question before submitting ✍️");return;}
+    const text=m.questions.map((q,i)=>`Q${i+1}: ${q}\n${ans[i]}`).join("\n\n");
+    DB.submissions.push({id:"sub_"+uid(),student:S.name,courseId:c.id,courseTitle:c.title,moduleId:m.id,moduleTitle:m.title,prompt:m.context,text,when:Date.now()});
+    if(markDone(c.id,m.id))addXP(18);save();toast("✦ Response submitted! +18 XP");render();};
+}
+
+/* ---- MIND MAP ---- */
+function mmBody(c,m){
+  if(!mm||mm.mid!==m.id)mm={cid:c.id,mid:m.id,topic:m.topic||"",nodes:[],next:1,busy:false,started:!!m.topic};
+  if(!mm.started){
+    const ex=["Climate change","A memorable journey","Technology in daily life","Healthy living","My dream job"];
+    return `<div class="card" style="max-width:560px"><p class="muted" style="font-size:14px;margin-bottom:12px">Type a topic — the AI grows branching vocabulary and ideas. Tap any node to spark its children.</p>
+      <input class="field" id="mmTopic" placeholder="e.g. ${ex[Math.floor(Math.random()*ex.length)]}"/>
+      <button class="btn btn-primary" id="mmStart" style="margin-top:12px">Grow my map →</button></div>`;
+  }
+  return `<div class="row-flex" style="margin-bottom:10px"><button class="btn btn-ghost btn-sm" id="mmReset">↺ New topic</button>
+    <button class="btn btn-primary btn-sm" id="mmDone">Finish & save (+25 XP) ✦</button>
+    <span class="grow"></span><span class="muted" style="font-size:12px"><span style="color:var(--teal)">● vocabulary</span> <span style="color:var(--violet)">● concept</span></span></div>
+    <p class="muted" style="font-size:13px;margin-bottom:10px" id="mmStatus"></p>
+    <div class="mm-wrap" id="mmWrap"><div class="mm-canvas" id="mmCanvas"></div></div>`;
+}
+function placeChildren(parent,count){const center=mm.nodes[0];const baseR=parent.depth===0?230:160;
+  const baseAng=parent.depth===0?-Math.PI/2:Math.atan2(parent.y-center.y,parent.x-center.x);
+  const spread=parent.depth===0?Math.PI*2:Math.PI*0.9;const start=parent.depth===0?0:baseAng-spread/2;const out=[];
+  for(let i=0;i<count;i++){const ang=parent.depth===0?(i/count)*Math.PI*2-Math.PI/2:start+(count===1?spread/2:(i/(count-1))*spread);
+    out.push({x:parent.x+Math.cos(ang)*baseR,y:parent.y+Math.sin(ang)*baseR});}return out;}
+async function mmExpand(nodeId){if(mm.busy)return;const parent=mm.nodes.find(n=>n.id===nodeId);if(!parent)return;
+  if(parent.depth>=3){toast("That branch is deep enough — try another 🌿");return;}
+  mm.busy=true;mmStatus();const existing=mm.nodes.map(n=>n.label).join(", ");
+  try{
+    const sys="You are an EFL tutor helping a student grow a brainstorming mind map. Produce creative, level-appropriate branches that trigger ideation and vocabulary. Respond ONLY with valid JSON — no markdown, no preamble.";
+    const usr=`Central topic: "${mm.topic}". Generate branches FROM node "${parent.label}". Avoid repeating: ${existing}. Return 4 fresh related ideas mixing useful English vocabulary and sub-concepts. JSON exactly: {"ideas":[{"label":"1-3 words","type":"vocabulary","hint":"<=7 word note"}]} type is "vocabulary" or "concept".`;
+    const data=parseJSON(await ai(sys,usr,700));const kids=(data.ideas||[]).slice(0,4);const pos=placeChildren(parent,kids.length);
+    kids.forEach((k,i)=>mm.nodes.push({id:mm.next++,label:String(k.label||"idea").slice(0,28),type:k.type==="concept"?"concept":"vocabulary",hint:String(k.hint||"").slice(0,40),parent:parent.id,x:pos[i].x,y:pos[i].y,depth:parent.depth+1}));
+    addXP(8);if(mm.nodes.length>=9)award("mapper");
+  }catch(e){toast("⚠️ "+e.message);}
+  mm.busy=false;renderMindmap();mmStatus();
+}
+function mmStatus(){const el=$("#mmStatus");if(!el)return;el.innerHTML=mm.busy?'<span class="spinner dark"></span> the AI is sparking new branches…':`Tap any <b>+</b> to branch · ${Math.max(0,mm.nodes.length-1)} ideas so far`;}
+function renderMindmap(){const cv=$("#mmCanvas");if(!cv)return;
+  const lines=mm.nodes.filter(n=>n.parent!==null).map(n=>{const p=mm.nodes.find(x=>x.id===n.parent);return `<line x1="${p.x}" y1="${p.y}" x2="${n.x}" y2="${n.y}" stroke="rgba(35,26,18,.18)" stroke-width="2"/>`;}).join("");
+  const nodes=mm.nodes.map(n=>n.type==="root"
+    ?`<div class="node root" style="left:${n.x}px;top:${n.y}px" data-mmexp="${n.id}">${esc(n.label)}<span class="plus">+</span></div>`
+    :`<div class="node ${n.type}" style="left:${n.x}px;top:${n.y}px" data-mmexp="${n.id}">${esc(n.label)}${n.hint?`<span class="hint">${esc(n.hint)}</span>`:""}${n.depth<3?'<span class="plus">+</span>':""}</div>`).join("");
+  cv.innerHTML=`<svg class="mm-svg" viewBox="0 0 1400 1000">${lines}</svg>${nodes}`;
+  const w=$("#mmWrap");if(w&&!w._c){w._c=true;w.scrollLeft=700-w.clientWidth/2;w.scrollTop=500-w.clientHeight/2;}
+}
+function bindMindmap(c,m){
+  if(!mm.started){
+    const start=()=>{const t=$("#mmTopic").value.trim();if(!t){toast("Type a topic");return;}mm.topic=t;mm.started=true;
+      mm.nodes=[{id:0,label:t,type:"root",parent:null,x:700,y:500,depth:0}];mm.next=1;$("#modBody").innerHTML=mmBody(c,m);bindMindmap(c,m);mmExpand(0);};
+    const b=$("#mmStart");if(b)b.onclick=start;const ti=$("#mmTopic");if(ti)ti.addEventListener("keydown",e=>{if(e.key==="Enter")start();});return;
+  }
+  if(mm.nodes.length===0){mm.nodes=[{id:0,label:mm.topic,type:"root",parent:null,x:700,y:500,depth:0}];}
+  renderMindmap();mmStatus();
+  $("#mmReset").onclick=()=>{mm.started=false;mm.nodes=[];$("#modBody").innerHTML=mmBody(c,m);bindMindmap(c,m);};
+  $("#mmDone").onclick=()=>{if(mm.nodes.length<5){toast("Grow a few branches first 🌱");return;}if(markDone(c.id,m.id))addXP(25);else addXP(0);toast("🎉 Mind map saved! +25 XP");mm=null;go("course",{cid:c.id});};
+  const cv=$("#mmCanvas");if(cv)cv.addEventListener("click",e=>{const n=e.target.closest("[data-mmexp]");if(n)mmExpand(parseInt(n.getAttribute("data-mmexp")));});
+}
+
+/* ---- SIX THINKING HATS ---- */
+const HATS=[{k:"white",ic:"⚪",n:"White Hat",d:"Facts, data — what do we know?",col:"--hat-white",dark:1},
+  {k:"red",ic:"🔴",n:"Red Hat",d:"Feelings & intuition — no need to justify.",col:"--hat-red"},
+  {k:"black",ic:"⚫",n:"Black Hat",d:"Caution & risks — what could go wrong?",col:"--hat-black"},
+  {k:"yellow",ic:"🟡",n:"Yellow Hat",d:"Value & benefits — why it could work.",col:"--hat-yellow",dark:1},
+  {k:"green",ic:"🟢",n:"Green Hat",d:"Creativity & new ideas — think sideways.",col:"--hat-green"},
+  {k:"blue",ic:"🔵",n:"Blue Hat",d:"Big picture — manage the thinking.",col:"--hat-blue"}];
+function shBody(c,m){
+  if(sh.mid!==m.id){sh={cid:c.id,mid:m.id,topic:m.topic||"",hat:null,busy:false,fb:null};}
+  return `<div class="card"><label style="font-weight:700;font-size:14px">Discussion topic</label>
+    <input class="field" id="shTopic" style="margin:8px 0 4px" value="${esc(sh.topic)}" placeholder="e.g. Should schools ban smartphones?"/>
+    <div style="font-weight:700;font-size:14px;margin:14px 0 2px">Choose your hat</div>
+    <div class="hats">${HATS.map(h=>`<button class="hat ${sh.hat===h.k?'sel':''}" data-hat="${h.k}" style="background:var(${h.col});${h.dark?'color:var(--ink)':''}"><div class="ic">${h.ic}</div><b>${h.n}</b><p>${h.d}</p></button>`).join("")}</div>
+    <textarea class="field" id="shText" rows="5" style="resize:vertical;margin-top:6px" placeholder="${sh.hat?'Write from the '+HATS.find(h=>h.k===sh.hat).n+' perspective…':'Pick a hat, then write here…'}"></textarea>
+    <button class="btn btn-primary" id="shSubmit" style="margin-top:12px" ${sh.hat?'':'disabled'}>Get AI feedback (+20 XP) ✦</button>
+    <div id="shFb"></div></div>`;
+}
+function renderFeedback(){const el=$("#shFb");if(!el)return;
+  if(sh.busy){el.innerHTML=`<div class="fb-card" style="margin-top:16px"><span class="spinner dark"></span> &nbsp;The AI is reading your thinking carefully…</div>`;return;}
+  if(!sh.fb){el.innerHTML="";return;}const f=sh.fb,hat=HATS.find(h=>h.k===sh.hat);
+  el.innerHTML=`<div class="view" style="margin-top:18px"><div class="row-flex" style="justify-content:space-between"><h3 style="font-size:19px">${hat.ic} Your ${hat.n} thinking</h3>
+    <span class="lvl" style="background:${f.score>=70?'var(--teal)':f.score>=40?'var(--amber)':'var(--ember)'}">${f.score}/100 aligned</span></div>
+    <div class="meter" style="margin-top:12px"><i style="width:${f.score}%"></i></div>
+    <div class="fb-card"><h4>🎯 Does it fit the hat?</h4><p>${esc(f.alignment)}</p></div>
+    <div class="fb-card"><h4>📝 Language coaching</h4><p>${esc(f.language)}</p></div>
+    <div class="fb-card"><h4>💡 On the topic</h4><p>${esc(f.theme)}</p></div>
+    <div class="fb-card" style="border-color:var(--ember);background:#fff8f6"><h4>🚀 Try next</h4><p>${esc(f.suggestion)}</p></div></div>`;
+}
+function bindSixHats(c,m){
+  document.querySelectorAll("[data-hat]").forEach(b=>b.onclick=()=>{sh.hat=b.getAttribute("data-hat");
+    sh.topic=$("#shTopic").value;const txt=$("#shText").value;$("#modBody").innerHTML=shBody(c,m);bindSixHats(c,m);$("#shText").value=txt;renderFeedback();});
+  const sub=$("#shSubmit");if(sub)sub.onclick=()=>shSubmit(c,m);
+  renderFeedback();
+}
+async function shSubmit(c,m){
+  const topic=$("#shTopic").value.trim(),text=$("#shText").value.trim();
+  if(!sh.hat){toast("Pick a hat first 🎩");return;}if(!topic){toast("Add a topic");return;}if(text.length<15){toast("Write a little more ✍️");return;}
+  sh.topic=topic;sh.busy=true;sh.fb=null;renderFeedback();const hat=HATS.find(h=>h.k===sh.hat);
+  try{
+    const sys="You are a warm, encouraging EFL critical-thinking coach using de Bono's Six Thinking Hats. Give brief, specific, kind feedback to a teenage English learner. Respond ONLY with valid JSON — no markdown, no preamble.";
+    const usr=`Topic: "${topic}". Student wrote from the ${hat.n} perspective (${hat.d}). Text:\n"""${text}"""\nReturn JSON exactly: {"score":<0-100 fit to ${hat.n} mode>,"alignment":"<2 sentences>","language":"<2 sentences: 1 grammar/vocab tip + 1 strength>","theme":"<1-2 sentences on relevance>","suggestion":"<1 concrete next step in same hat>"} each field <320 chars, address student as "you".`;
+    const f=parseJSON(await ai(sys,usr,900));f.score=Math.max(0,Math.min(100,parseInt(f.score)||0));
+    sh.fb=f;sh.busy=false;if(markDone(c.id,m.id))addXP(20);else addXP(0);award("thinker");
+    renderFeedback();updateChrome();
+  }catch(e){sh.busy=false;sh.fb=null;renderFeedback();toast("⚠️ "+e.message);}
+}
+
+/* ============== PEER REVIEW FORM ============== */
+const CRIT=["Clarity","Relevance","Language"];
+let revDraft={};
+function screenReviewForm(){
+  const s=DB.submissions.find(x=>x.id===V.params.sid);
+  if(!s)return`<div class="wrap"><p style="padding:40px">Submission not found.</p></div>`;
+  revDraft={Clarity:0,Relevance:0,Language:0};
+  return `<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="review">← Peer Review</button></div>
+    <div class="card"><div class="row-flex"><span class="pill" style="background:#f3f0ff;color:var(--violet)">${esc(s.courseTitle||"Submission")}</span><span class="muted" style="font-size:12px">by ${esc(s.student)}</span></div>
+      <p style="margin:14px 0;font-size:16px;line-height:1.6;padding:14px;background:var(--cream);border-radius:12px">${esc(s.text)}</p>
+      <h3 style="font-size:18px;margin:8px 0">Rate it</h3>
+      ${CRIT.map(cr=>`<div class="rev-crit"><b>${cr}</b><div class="stars" data-crit="${cr}">${[1,2,3,4,5].map(n=>`<span class="star" data-n="${n}">★</span>`).join("")}</div></div>`).join("")}
+      <label style="font-weight:700;font-size:14px;display:block;margin-top:12px">Constructive comment</label>
+      <textarea class="field" id="revComment" rows="4" style="resize:vertical;margin-top:8px" placeholder="What worked well? One specific thing to improve?"></textarea>
+      <button class="btn btn-primary" id="revSubmit" style="margin-top:14px">Submit review (+10 XP) 🤝</button></div></div>`;
+}
+function bindReviewForm(){
+  document.querySelectorAll(".stars").forEach(g=>{const cr=g.getAttribute("data-crit");
+    g.querySelectorAll(".star").forEach(st=>st.onclick=()=>{const n=+st.getAttribute("data-n");revDraft[cr]=n;
+      g.querySelectorAll(".star").forEach(x=>x.classList.toggle("on",+x.getAttribute("data-n")<=n));});});
+  $("#revSubmit").onclick=()=>{const s=DB.submissions.find(x=>x.id===V.params.sid);
+    if(CRIT.some(c=>!revDraft[c])){toast("Give a star rating for each criterion");return;}
+    const comment=$("#revComment").value.trim();if(comment.length<10){toast("Add a short constructive comment ✍️");return;}
+    DB.reviews.push({id:"rev_"+uid(),submissionId:s.id,reviewer:S.name,scores:{...revDraft},comment,when:Date.now()});
+    addXP(10);award("reviewer");save();toast("🤝 Thanks! Your feedback helps a classmate. +10 XP");go("review");};
+}
+
+/* ============== TEACHER COURSE BUILDER ============== */
+const SWATCHES=["#FFB23E","#FF5630","#6C4CF1","#12B5A5","#3B82F6","#27C28B"];
+const EMOJIS=["📘","📖","⚖️","🗣️","🎭","🌍","🔬","✏️","🎬","🎧"];
+let draft=null, mform={type:"lesson",quizQs:[]};
+function newDraft(){return {id:"tc_"+uid(),title:"",desc:"",emoji:"📘",color:"#FFB23E",level:"B1",by:S.name||"Teacher",modules:[]};}
+function readMeta(){if(!draft)return;const t=$("#bTitle"),d=$("#bDesc");if(t)draft.title=t.value;if(d)draft.desc=d.value;}
+function screenBuilder(){
+  if(!draft||draft._forCid!==(V.params.cid||null)){const ex=V.params.cid&&DB.courses.find(c=>c.id===V.params.cid);draft=ex?JSON.parse(JSON.stringify(ex)):newDraft();draft._forCid=V.params.cid||null;mform={type:"lesson",quizQs:[]};}
+  const TYPES=[["lesson","📄 Lesson"],["video","🎬 Video"],["audio","🎧 Audio"],["document","📎 Document"],["quiz","❓ Quiz"],["dragdrop","🧲 Drag & drop"],["game","🎮 Memory game"],["casestudy","📂 Case study"],["scenario","🌿 Scenario"],["assignment","✍️ Assignment"],["mindmap","🧠 Mind Map"],["sixhats","🎩 Six Hats"]];
+  return `<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="courses">← Courses</button></div>
+    <h1 style="font-size:32px">${V.params.cid?'Edit course':'Build a course'}</h1>
+    <p class="muted lead" style="margin:6px 0 18px">Set the basics, then stack modules — lessons, media, quizzes, branching scenarios, assignments and AI activities.</p>
+    <div class="cards2">
+      <div class="card"><h3 style="font-size:19px;margin-bottom:12px">Course basics</h3>
+        <label style="font-weight:700;font-size:13px">Title</label>
+        <input class="field" id="bTitle" style="margin:6px 0 12px" value="${esc(draft.title)}" placeholder="e.g. Everyday Conversations"/>
+        <label style="font-weight:700;font-size:13px">Description</label>
+        <input class="field" id="bDesc" style="margin:6px 0 12px" value="${esc(draft.desc)}" placeholder="One line about the course"/>
+        <label style="font-weight:700;font-size:13px">Level</label>
+        <select class="field" id="bLevel" style="margin:6px 0 12px">${["A1","A2","B1","B2","C1"].map(l=>`<option ${draft.level===l?'selected':''}>${l}</option>`).join("")}</select>
+        <label style="font-weight:700;font-size:13px">Icon</label>
+        <div class="row-flex" style="margin:8px 0 12px">${EMOJIS.map(e=>`<button class="btn btn-ghost btn-sm" data-emoji="${e}" style="${draft.emoji===e?'border-color:var(--ember)':''}">${e}</button>`).join("")}</div>
+        <label style="font-weight:700;font-size:13px">Colour</label>
+        <div class="row-flex" style="margin-top:8px">${SWATCHES.map(c=>`<button data-color="${c}" style="width:30px;height:30px;border-radius:9px;background:${c};${draft.color===c?'outline:3px solid var(--ink);outline-offset:2px':''}"></button>`).join("")}</div>
+      </div>
+      <div class="card"><h3 style="font-size:19px;margin-bottom:12px">Add a module</h3>
+        <label style="font-weight:700;font-size:13px">Type</label>
+        <select class="field" id="bType" style="margin:6px 0 12px">${TYPES.map(([k,l])=>`<option value="${k}" ${mform.type===k?'selected':''}>${l}</option>`).join("")}</select>
+        ${moduleFormFields()}
+        <button class="btn btn-primary" id="bAddMod" style="margin-top:6px">+ Add module</button>
+      </div>
+    </div>
+    <div class="section-h"><h2>Modules (${draft.modules.length})</h2></div>
+    ${draft.modules.length?draft.modules.map((m,i)=>`<div class="builder-mod"><span>${MTYPE[m.type].e}</span><b style="flex:1">${i+1}. ${esc(m.title)}</b><span class="mtype">${MTYPE[m.type].label}</span><button class="btn btn-ghost btn-sm" data-del="${i}">✕</button></div>`).join(""):`<div class="empty">No modules yet — add your first above.</div>`}
+    <div class="row-flex" style="margin-top:20px"><button class="btn btn-primary" id="bPublish">${V.params.cid?'Save changes ✦':'Publish course ✦'}</button>
+      <span class="muted" style="font-size:13px">Published courses appear instantly in the student catalog.</span></div></div>`;
+}
+function moduleFormFields(){
+  switch(mform.type){
+    case "lesson": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><textarea class="field" id="fBody" rows="4" style="resize:vertical;margin-bottom:12px" placeholder="Lesson text (use blank lines for paragraphs)"></textarea>`;
+    case "video": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><input class="field" id="fUrl" style="margin-bottom:10px" placeholder="Video link (YouTube, Drive, etc.)"/><input class="field" id="fBody" style="margin-bottom:12px" placeholder="Short note (optional)"/>`;
+    case "audio": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><input class="field" id="fUrl" style="margin-bottom:10px" placeholder="Audio link (podcast, mp3, Drive…)"/><input class="field" id="fBody" style="margin-bottom:12px" placeholder="Short note (optional)"/>`;
+    case "document": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><input class="field" id="fUrl" style="margin-bottom:10px" placeholder="Document link (PDF, Drive, article…)"/><input class="field" id="fBody" style="margin-bottom:12px" placeholder="What should students do with it?"/>`;
+    case "dragdrop": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><textarea class="field" id="fPairs" rows="4" style="resize:vertical;margin-bottom:6px" placeholder="One pair per line:&#10;Hook = An opening that grabs attention&#10;Climax = The moment of highest tension"></textarea><p class="muted" style="font-size:12px;margin-bottom:8px">Format: <b>term = meaning</b>, one per line.</p>`;
+    case "game": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><textarea class="field" id="fPairs" rows="4" style="resize:vertical;margin-bottom:6px" placeholder="One pair per line:&#10;journey = a trip&#10;vivid = very clear"></textarea><p class="muted" style="font-size:12px;margin-bottom:8px">Format: <b>word = meaning</b>, one per line (3–6 pairs works best).</p>`;
+    case "casestudy": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><textarea class="field" id="fContext" rows="3" style="resize:vertical;margin-bottom:8px" placeholder="The scenario / case students will read"></textarea><textarea class="field" id="fQuestions" rows="3" style="resize:vertical;margin-bottom:6px" placeholder="One guiding question per line"></textarea><p class="muted" style="font-size:12px;margin-bottom:8px">Students read the case, then answer each question. Responses go to you and the peer pool.</p>`;
+    case "assignment": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><textarea class="field" id="fPrompt" rows="3" style="resize:vertical;margin-bottom:12px" placeholder="The task students must complete"></textarea>`;
+    case "scenario": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><select class="field" id="fScn" style="margin-bottom:12px">${Object.entries(SCENARIOS).map(([k,v])=>`<option value="${k}">${v.emoji} ${esc(v.title)}</option>`).join("")}</select><p class="muted" style="font-size:12px;margin-bottom:8px">Built-in interactive scenarios with real-time consequences.</p>`;
+    case "mindmap": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><input class="field" id="fTopic" style="margin-bottom:12px" placeholder="Suggested central topic (optional)"/>`;
+    case "sixhats": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Module title"/><input class="field" id="fTopic" style="margin-bottom:12px" placeholder="Discussion topic for the hats"/>`;
+    case "quiz": return `<input class="field" id="fTitle" style="margin-bottom:10px" placeholder="Quiz title"/>
+      <div style="border:1px dashed var(--line);border-radius:12px;padding:12px;margin-bottom:10px">
+        <input class="field" id="qText" style="margin-bottom:8px" placeholder="Question"/>
+        ${[0,1,2,3].map(i=>`<div class="row-flex" style="margin-bottom:6px"><input type="radio" name="qright" value="${i}" ${i===0?'checked':''}/><input class="field" id="qo${i}" placeholder="Option ${i+1}"/></div>`).join("")}
+        <button class="btn btn-ghost btn-sm" id="qAdd">+ Add question</button>
+        <div class="muted" style="font-size:12px;margin-top:8px">${mform.quizQs.length} question(s) added${mform.quizQs.length?': '+mform.quizQs.map(q=>esc(q.q.slice(0,18))).join(' · '):''}</div>
+      </div>`;
+  }
+  return "";
+}
+function bindBuilder(){
+  document.querySelectorAll("[data-emoji]").forEach(b=>b.onclick=()=>{readMeta();draft.emoji=b.getAttribute("data-emoji");render();});
+  document.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{readMeta();draft.color=b.getAttribute("data-color");render();});
+  const lv=$("#bLevel");if(lv)lv.onchange=()=>{readMeta();draft.level=lv.value;};
+  const ty=$("#bType");if(ty)ty.onchange=()=>{readMeta();mform.type=ty.value;mform.quizQs=[];render();};
+  const qa=$("#qAdd");if(qa)qa.onclick=()=>{readMeta();const q=$("#qText").value.trim();const opts=[0,1,2,3].map(i=>$("#qo"+i).value.trim());
+    if(!q||opts.some(o=>!o)){toast("Fill the question and all four options");return;}
+    const right=+document.querySelector('input[name="qright"]:checked').value;
+    mform.quizQs.push({q,options:opts,answer:right});render();};
+  const del=document.querySelectorAll("[data-del]");del.forEach(b=>b.onclick=()=>{readMeta();draft.modules.splice(+b.getAttribute("data-del"),1);render();});
+  const add=$("#bAddMod");if(add)add.onclick=()=>{readMeta();const ft=$("#fTitle");const title=(ft&&ft.value.trim())||MTYPE[mform.type].label;
+    let m={id:"m_"+uid(),type:mform.type,title};
+    if(mform.type==="lesson")m.body=($("#fBody").value.trim())||"";
+    if(mform.type==="video"||mform.type==="audio"){m.url=$("#fUrl").value.trim();m.body=$("#fBody").value.trim();}
+    if(mform.type==="document"){m.url=$("#fUrl").value.trim();m.body=$("#fBody").value.trim();}
+    if(mform.type==="assignment")m.prompt=($("#fPrompt").value.trim())||"Complete the task.";
+    if(mform.type==="scenario")m.scenario=$("#fScn").value;
+    if(mform.type==="mindmap")m.topic=$("#fTopic").value.trim();
+    if(mform.type==="sixhats")m.topic=$("#fTopic").value.trim();
+    if(mform.type==="dragdrop"||mform.type==="game"){
+      const pairs=$("#fPairs").value.split("\n").map(l=>l.split("=")).filter(p=>p.length>=2&&p[0].trim()&&p[1].trim()).map(p=>({a:p[0].trim(),b:p.slice(1).join("=").trim()}));
+      if(pairs.length<2){toast("Add at least 2 pairs (term = meaning)");return;} m.pairs=pairs;}
+    if(mform.type==="casestudy"){
+      m.context=$("#fContext").value.trim();
+      m.questions=$("#fQuestions").value.split("\n").map(q=>q.trim()).filter(Boolean);
+      if(!m.context||!m.questions.length){toast("Add a scenario and at least one question");return;}}
+    if(mform.type==="quiz"){if(!mform.quizQs.length){toast("Add at least one question");return;}m.questions=mform.quizQs;}
+    draft.modules.push(m);mform.quizQs=[];toast("✦ Module added");render();};
+  const pub=$("#bPublish");if(pub)pub.onclick=()=>{readMeta();if(!draft.title.trim()){toast("Give your course a title");return;}if(!draft.modules.length){toast("Add at least one module");return;}
+    const ix=DB.courses.findIndex(c=>c.id===draft.id);if(ix>=0)DB.courses[ix]=draft;else{DB.courses.push(draft);award("creator");}
+    save();const d=draft;draft=null;toast("🎉 Course "+(ix>=0?"updated":"published")+"!");go("course",{cid:d.id});};
+}
+
+/* ============== CHALLENGES ============== */
+const CHALLENGES=[
+  {id:"acts3",e:"🎯",t:"Complete 3 activities",xp:30,test:()=>totalCompleted()>=3},
+  {id:"enroll2",e:"📚",t:"Enroll in 2 courses",xp:15,test:()=>S.enrolled.length>=2},
+  {id:"review1",e:"🤝",t:"Give a peer review",xp:20,test:()=>DB.reviews.some(r=>r.reviewer===S.name)},
+  {id:"map1",e:"🧠",t:"Build a mind map",xp:25,test:()=>!!S.badges.mapper},
+  {id:"lvl3",e:"🚀",t:"Reach Level 3",xp:40,test:()=>levelOf(S.xp)>=3}];
+function totalCompleted(){let n=0;for(const cid in S.progress)n+=Object.keys(S.progress[cid]).length;return n;}
+function screenChallenges(){
+  return `<div class="wrap view"><h2 style="font-size:30px;margin:24px 0 4px">Challenges 🏆</h2>
+    <p class="lead muted">Bite-sized goals that reward consistent learning. Hit the target, claim the XP.</p>
+    <div style="margin-top:18px;max-width:640px">${CHALLENGES.map(ch=>{const done=ch.test(),claimed=S.challengesClaimed[ch.id];
+      return `<div class="chal ${claimed?'done':''}"><div class="ce">${ch.e}</div>
+        <div style="flex:1"><b>${ch.t}</b><div class="muted" style="font-size:12px">Reward: ${ch.xp} XP</div></div>
+        ${claimed?'<span style="color:var(--teal);font-weight:800;font-size:13px">✓ Claimed</span>':done?`<button class="btn btn-primary btn-sm" data-claim="${ch.id}">Claim +${ch.xp}</button>`:'<span class="muted" style="font-size:13px">In progress…</span>'}</div>`;}).join("")}</div></div>`;
+}
+function bindChallenges(){document.querySelectorAll("[data-claim]").forEach(b=>b.onclick=()=>{const id=b.getAttribute("data-claim"),ch=CHALLENGES.find(x=>x.id===id);
+  if(!ch||!ch.test()||S.challengesClaimed[id])return;S.challengesClaimed[id]=true;addXP(ch.xp);toast(`🏆 +${ch.xp} XP — challenge complete!`);render();});}
+
+/* ============== SETTINGS / PERSONALIZATION ============== */
+function screenSettings(){const p=S.prefs;const ACC=["#FF5630","#6C4CF1","#12B5A5","#FFB23E","#3B82F6"];
+  return `<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="home">← Back</button></div>
+    <h1 style="font-size:32px">Settings &amp; preferences</h1>
+    <div class="cards2" style="margin-top:18px">
+      <div class="card"><h3 style="font-size:19px;margin-bottom:8px">Profile</h3>
+        <label style="font-weight:700;font-size:13px">Display name</label>
+        <input class="field" id="setName" style="margin:6px 0 12px" value="${esc(S.name)}"/>
+        <label style="font-weight:700;font-size:13px">My learning goal</label>
+        <input class="field" id="setGoal" style="margin:6px 0 12px" value="${esc(p.goal||"")}"/>
+        <label style="font-weight:700;font-size:13px">Daily XP goal: <span id="dxpVal">${p.dailyXP||40}</span></label>
+        <input type="range" id="setDXP" min="10" max="120" step="10" value="${p.dailyXP||40}" style="width:100%;margin-top:8px" aria-label="Daily XP goal"/>
+        <div style="margin-top:14px"><span style="font-weight:700;font-size:13px">Accent colour</span>
+          <div class="row-flex" style="margin-top:8px">${ACC.map(c=>`<button data-acc="${c}" aria-label="Accent ${c}" style="width:30px;height:30px;border-radius:9px;background:${c};${p.accent===c?'outline:3px solid var(--ink);outline-offset:2px':''}"></button>`).join("")}</div></div>
+        <button class="btn btn-primary" id="saveProfile" style="margin-top:16px">Save profile ✦</button>
+      </div>
+      <div class="card"><h3 style="font-size:19px;margin-bottom:4px">Accessibility</h3>
+        <p class="muted" style="font-size:13px;margin-bottom:6px">Changes apply instantly across SparkEd.</p>
+        ${[["bigText","Larger text","Increase the base font size"],["contrast","High contrast","Maximise text/background contrast"],["dyslexia","Dyslexia-friendly font","More legible font &amp; spacing"],["reduceMotion","Reduce motion","Turn off animations"]].map(([k,t,d])=>`
+          <div class="set-row"><div><b>${t}</b><div><span>${d}</span></div></div><div class="toggle ${p[k]?'on':''}" data-pref="${k}" role="switch" aria-checked="${!!p[k]}" tabindex="0"><i></i></div></div>`).join("")}
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px"><h3 style="font-size:18px;margin-bottom:6px">Account</h3>
+      <p class="muted" style="font-size:14px">Signed in as <b>${esc(S.email)}</b> · ${esc(S.role)}</p>
+      <button class="btn btn-ghost btn-sm" id="setLogout" style="margin-top:10px">Log out</button></div></div>`;
+}
+function bindSettings(){
+  document.querySelectorAll("[data-pref]").forEach(t=>{const k=t.getAttribute("data-pref");
+    const tog=()=>{S.prefs[k]=!S.prefs[k];applyPrefs();save();render();};
+    t.onclick=tog;t.onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();tog();}};});
+  document.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{S.prefs.accent=b.getAttribute("data-acc");applyPrefs();save();render();});
+  const dx=$("#setDXP");if(dx)dx.oninput=()=>{$("#dxpVal").textContent=dx.value;};
+  const sp=$("#saveProfile");if(sp)sp.onclick=()=>{const n=$("#setName").value.trim();if(n){S.name=n;if(accounts[S.email])accounts[S.email].name=n;}
+    S.prefs.goal=$("#setGoal").value.trim();S.prefs.dailyXP=+$("#setDXP").value;save();toast("✓ Saved");render();};
+  const lo=$("#setLogout");if(lo)lo.onclick=()=>{toast("Logged out");logout();};
+}
+
+/* ============== DISCUSSION (collaborative) ============== */
+function timeAgo(t){const s=(Date.now()-t)/1000;if(s<3600)return Math.max(1,Math.round(s/60))+"m ago";if(s<86400)return Math.round(s/3600)+"h ago";return Math.round(s/86400)+"d ago";}
+function rolePill(role){return `<span class="role-pill" style="background:${role==='teacher'?'var(--gold)':'#f3f0ff'};color:${role==='teacher'?'var(--ink)':'var(--violet)'}">${esc(role)}</span>`;}
+function screenDiscussion(){const c=courseById(V.params.cid);if(!c)return`<div class="wrap"><p style="padding:40px">Not found.</p></div>`;
+  const posts=DB.discussions[c.id]||[];
+  return `<div class="wrap view"><div class="section-h" style="margin-top:22px"><button class="back" data-nav="course" data-params='${JSON.stringify({cid:c.id})}'>← ${esc(c.title)}</button></div>
+    <h1 style="font-size:30px">${c.emoji} Discussion</h1>
+    <p class="lead muted" style="margin:6px 0 16px">Ask questions, share tips, help classmates — collaborative learning in English.</p>
+    <div class="card" style="margin-bottom:18px"><textarea class="field" id="postText" rows="3" style="resize:vertical" placeholder="Start a discussion…" aria-label="New post"></textarea>
+      <button class="btn btn-primary btn-sm" id="postBtn" style="margin-top:10px">Post (+3 XP)</button></div>
+    ${posts.length?posts.slice().reverse().map(p=>`<div class="post">
+      <div class="who">${esc(p.author)} ${rolePill(p.role)}<span class="muted" style="font-weight:500;font-size:12px;margin-left:auto">${timeAgo(p.when)}</span></div>
+      <p style="margin:8px 0;font-size:15px;line-height:1.5">${esc(p.text)}</p>
+      ${(p.replies||[]).map(r=>`<div class="reply"><b>${esc(r.author)}</b> ${rolePill(r.role)}<div style="margin-top:4px">${esc(r.text)}</div></div>`).join("")}
+      <div class="row-flex" style="margin-top:10px"><input class="field" id="rin_${p.id}" placeholder="Reply…" style="flex:1" aria-label="Reply"/><button class="btn btn-ghost btn-sm" data-reply="${p.id}">Reply</button></div>
+    </div>`).join(""):`<div class="empty">No posts yet — start the conversation.</div>`}</div>`;
+}
+function bindDiscussion(){const c=courseById(V.params.cid);if(!c)return;
+  const pb=$("#postBtn");if(pb)pb.onclick=()=>{const t=$("#postText").value.trim();if(t.length<3){toast("Write a little more");return;}
+    if(!DB.discussions[c.id])DB.discussions[c.id]=[];DB.discussions[c.id].push({id:"p_"+uid(),author:S.name,role:S.role,text:t,when:Date.now(),replies:[]});addXP(3);save();toast("✦ Posted! +3 XP");render();};
+  document.querySelectorAll("[data-reply]").forEach(b=>b.onclick=()=>{const pid=b.getAttribute("data-reply"),inp=$("#rin_"+pid),t=inp.value.trim();if(t.length<2){toast("Write a reply");return;}
+    const post=(DB.discussions[c.id]||[]).find(p=>p.id===pid);if(post){post.replies=post.replies||[];post.replies.push({author:S.name,role:S.role,text:t});addXP(2);save();toast("✦ Reply added! +2 XP");render();}});
+}
+
+/* ============== DRAG & DROP MATCHING ============== */
+let ddState=null;
+function ddBody(c,m){
+  if(!ddState||ddState.mid!==m.id){const order=m.pairs.map((_,i)=>i);for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}ddState={mid:m.id,placed:{},sel:null,order};}
+  const allDone=m.pairs.every((_,i)=>ddState.placed[i]!=null);
+  return `<div class="card"><p class="muted" style="font-size:14px;margin-bottom:6px">Tap a meaning on the right, then tap the term it belongs to on the left.</p>
+    <div class="dd-grid">
+      <div class="dd-col"><h4>Terms</h4>${m.pairs.map((p,i)=>{const placed=ddState.placed[i]!=null;
+        return `<div class="dd-slot ${placed?'has correct':''}" data-slot="${i}"><span class="dd-term">${esc(p.a)}</span>${placed?`<span style="margin-left:auto;font-weight:600;color:var(--teal)">${esc(m.pairs[ddState.placed[i]].b)} ✓</span>`:'<span style="margin-left:auto;color:var(--ink-soft);font-size:12px">tap to place</span>'}</div>`;}).join("")}</div>
+      <div class="dd-col"><h4>Meanings</h4>${ddState.order.map(ci=>{const used=Object.values(ddState.placed).map(Number).includes(ci);
+        return `<div class="dd-chip ${ddState.sel===ci?'sel':''} ${used?'used':''}" data-chip="${ci}">${esc(m.pairs[ci].b)}</div>`;}).join("")}</div>
+    </div>
+    ${allDone?`<div class="consequence" style="border-color:var(--teal);background:#effbf9;margin-top:14px">All matched! 🎉</div><button class="btn btn-primary" id="ddDone">Continue (+15 XP) ✦</button>`:''}</div>`;
+}
+function bindDragdrop(c,m){
+  document.querySelectorAll("[data-chip]").forEach(el=>{if(el.classList.contains("used"))return;el.onclick=()=>{ddState.sel=+el.getAttribute("data-chip");$("#modBody").innerHTML=ddBody(c,m);bindDragdrop(c,m);};});
+  document.querySelectorAll("[data-slot]").forEach(el=>el.onclick=()=>{const s=+el.getAttribute("data-slot");
+    if(ddState.placed[s]!=null)return;if(ddState.sel==null){toast("Pick a meaning first");return;}
+    if(ddState.sel===s){ddState.placed[s]=ddState.sel;ddState.sel=null;$("#modBody").innerHTML=ddBody(c,m);bindDragdrop(c,m);}
+    else{ddState.sel=null;el.classList.add("shake");toast("Not a match — try again");setTimeout(()=>{$("#modBody").innerHTML=ddBody(c,m);bindDragdrop(c,m);},350);}});
+  const dn=$("#ddDone");if(dn)dn.onclick=()=>{if(markDone(c.id,m.id))addXP(15);else addXP(0);toast("✓ +15 XP");ddState=null;go("course",{cid:c.id});};
+}
+
+/* ============== MEMORY GAME ============== */
+let gmState=null;
+function gameBody(c,m){
+  if(!gmState||gmState.mid!==m.id){let cards=[];m.pairs.forEach((p,i)=>{cards.push({key:i,label:p.a});cards.push({key:i,label:p.b});});
+    for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
+    cards.forEach((cd,idx)=>{cd.id=idx;cd.up=false;cd.matched=false;});gmState={mid:m.id,cards,open:[],moves:0,locked:false};}
+  return `<div class="card"><p class="muted" style="font-size:14px">Flip two cards to find matching pairs (word ↔ meaning). Moves: <b id="gmMoves">${gmState.moves}</b></p>
+    <div class="mem-grid" id="gmGrid"></div><div id="gmEnd"></div></div>`;
+}
+function gameRender(c,m){const g=$("#gmGrid");if(!g)return;
+  g.innerHTML=gmState.cards.map(cd=>{const show=cd.up||cd.matched;return `<div class="mem-card ${show?'up':'down'} ${cd.matched?'matched':''}" data-card="${cd.id}"><span>${esc(cd.label)}</span></div>`;}).join("");
+  g.querySelectorAll("[data-card]").forEach(el=>el.onclick=()=>gmFlip(c,m,+el.getAttribute("data-card")));
+  const mv=$("#gmMoves");if(mv)mv.textContent=gmState.moves;
+  if(gmState.cards.every(cd=>cd.matched)){const end=$("#gmEnd");const xp=Math.max(15,40-gmState.moves);
+    end.innerHTML=`<div class="consequence" style="border-color:var(--teal);background:#effbf9;margin-top:14px">Cleared in ${gmState.moves} moves! 🎉</div><button class="btn btn-primary" id="gmDone">Continue (+${xp} XP) ✦</button>`;
+    const d=$("#gmDone");if(d)d.onclick=()=>{if(markDone(c.id,m.id))addXP(xp);else addXP(0);toast("✓ +"+xp+" XP");gmState=null;go("course",{cid:c.id});};}
+}
+function gmFlip(c,m,id){if(gmState.locked)return;const cd=gmState.cards.find(x=>x.id===id);if(!cd||cd.up||cd.matched)return;
+  cd.up=true;gmState.open.push(id);
+  if(gmState.open.length===2){gmState.moves++;gmState.locked=true;const a=gmState.cards.find(x=>x.id===gmState.open[0]),b=gmState.cards.find(x=>x.id===gmState.open[1]);
+    if(a.key===b.key){a.matched=b.matched=true;gmState.open=[];gmState.locked=false;gameRender(c,m);}
+    else{gameRender(c,m);setTimeout(()=>{a.up=b.up=false;gmState.open=[];gmState.locked=false;gameRender(c,m);},800);}}
+  else gameRender(c,m);
+}
+function bindGame(c,m){gameRender(c,m);}
+
+/* ============== RENDER DISPATCH + BOOT ============== */
+function render(){
+  updateChrome();const sc=$("#screen");
+  if(!session){sc.innerHTML=screenGate();bindGate();return;}
+  switch(V.name){
+    case "courses": sc.innerHTML=screenCourses(); break;
+    case "course": sc.innerHTML=screenCourse(); bindCourse(); break;
+    case "module": sc.innerHTML=screenModule(); bindModule(); break;
+    case "discussion": sc.innerHTML=screenDiscussion(); bindDiscussion(); break;
+    case "review": sc.innerHTML=screenReview(); break;
+    case "reviewone": sc.innerHTML=screenReviewForm(); bindReviewForm(); break;
+    case "leaderboard": sc.innerHTML=screenLeaderboard(); break;
+    case "challenges": sc.innerHTML=screenChallenges(); bindChallenges(); break;
+    case "submissions": sc.innerHTML=screenSubmissions(); bindSubmissions(); break;
+    case "build": sc.innerHTML=screenBuilder(); bindBuilder(); break;
+    case "settings": sc.innerHTML=screenSettings(); bindSettings(); break;
+    case "pricing": sc.innerHTML=screenPricing(); bindPricing(); break;
+    default: sc.innerHTML=(S.role==="teacher"?screenTeacherHome():screenStudentHome());
+  }
+}
+// reset transient builder/activity state when navigating away via top nav
+(function(){const _go=go;window._noop=0;})();
+load().then(render).catch(render);
+})();
+</script>
